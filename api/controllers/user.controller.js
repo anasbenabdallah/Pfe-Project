@@ -241,9 +241,10 @@ const getsuggestedUsers = async (req, res) => {
       .select("-password");
     const testers = await companySchema.find().select("-password");
 
-    let suggestedUsers = [...users].slice(0, 10);
+    // Combine users and testers into a single array
+    let suggestedEntities = [...users, ...testers].slice(0, 10);
 
-    return res.status(200).json(suggestedUsers);
+    return res.status(200).json(suggestedEntities);
   } catch (error) {
     return res.status(500).json(error.message);
   }

@@ -15,7 +15,6 @@ import {
   Stack,
 } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-//axios
 import axios from "axios";
 import { NotificationsModal } from "./NotificationsModal";
 import { useTheme } from "@mui/material/styles";
@@ -35,18 +34,16 @@ const NotificationBell = () => {
           withCredentials: true,
         })
         .then((response) => {
-          console.log(response);
           setNotifications(response.data);
         })
         .catch((error) => {
           console.error(error.message);
         });
     } else {
-      // redirect to login page if userId is not found in localStorage
-      console.log("hey");
+      console.log("User ID not found, redirecting to login page.");
     }
   }, []);
-  console.log(notifications);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -54,7 +51,8 @@ const NotificationBell = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  function timeSince(date) {
+
+  const timeSince = (date) => {
     const providedDate = new Date(date);
     const currentDate = new Date();
     const elapsed = currentDate.getTime() - providedDate.getTime();
@@ -62,19 +60,19 @@ const NotificationBell = () => {
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
+
     if (days > 0) {
-      return `${days} day${days > 1 ? "s" : ""} `;
+      return `${days} day${days > 1 ? "s" : ""}`;
     } else if (hours > 0) {
-      return `${hours} hour${hours > 1 ? "s" : ""} `;
+      return `${hours} hour${hours > 1 ? "s" : ""}`;
     } else if (minutes > 0) {
-      return `${minutes} minute${minutes > 1 ? "s" : ""} `;
+      return `${minutes} minute${minutes > 1 ? "s" : ""}`;
     } else {
       return "just now";
     }
-  }
+  };
 
-  // ==============================|| Notifications Modal ||============================== //
-  const [NotificationModal, setOpenNotificationModal] = useState(false);
+  const [notificationModal, setOpenNotificationModal] = useState(false);
 
   const handleClickOpenModalNotification = () => {
     setOpenNotificationModal(true);
@@ -83,6 +81,7 @@ const NotificationBell = () => {
   const handleCloseModalNotification = () => {
     setOpenNotificationModal(false);
   };
+
   return (
     <div>
       <IconButton
@@ -91,7 +90,7 @@ const NotificationBell = () => {
         aria-controls={open ? "notification-menu" : undefined}
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
-        sx={{ color: theme.palette.primary.main }} // Apply the primary main color for the icon
+        sx={{ color: theme.palette.primary.main }}
       >
         <Badge badgeContent={notifications.length} color="primary">
           <NotificationsIcon />
@@ -99,7 +98,7 @@ const NotificationBell = () => {
       </IconButton>
       <Menu
         anchorEl={anchorEl}
-        id="account-menu"
+        id="notification-menu"
         open={open}
         onClose={handleClose}
         disableScrollLock={true}
@@ -145,8 +144,8 @@ const NotificationBell = () => {
           </ListItem>
           <Divider />
           {notifications.map((notification) => (
-            <React.Fragment>
-              <ListItemButton onClick={handleClose} key={notification._id}>
+            <React.Fragment key={notification._id}>
+              <ListItemButton onClick={handleClose}>
                 <ListItemAvatar>
                   <Avatar
                     src={
@@ -212,7 +211,7 @@ const NotificationBell = () => {
         </List>
       </Menu>
       <NotificationsModal
-        open={NotificationModal}
+        open={notificationModal}
         handleClose={handleCloseModalNotification}
       />
     </div>

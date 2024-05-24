@@ -8,7 +8,6 @@ const RightSideContent = () => {
   return (
     <div>
       <Stack spacing={2}>
-        <MoneyBalance />
         <Leaders />
         <MyContestLists />
       </Stack>

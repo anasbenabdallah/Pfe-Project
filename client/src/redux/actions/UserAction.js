@@ -110,12 +110,14 @@ export const getUserById = (id) => async (dispatch, getState) => {
       type: "getUserById",
       payload: response.data,
     });
+
     console.log("User:", response.data);
+    return response.data; // Ensure the response data is returned
   } catch (error) {
     console.log(error);
+    throw error; // Ensure the error is thrown
   }
 };
-
 export const followUser = (otheruserId) => async (dispatch, getState) => {
   try {
     const user = JSON.parse(localStorage.getItem("user"));

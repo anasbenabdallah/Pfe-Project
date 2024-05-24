@@ -103,7 +103,7 @@ const AddPostMenuList = () => {
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            <AddIcon />
+            <AddIcon style={{ color: "orange" }} />
           </IconButton>
         </Tooltip>
       </Box>

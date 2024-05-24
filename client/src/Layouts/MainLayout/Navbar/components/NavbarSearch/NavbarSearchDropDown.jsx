@@ -30,11 +30,17 @@ export default function NavbarSearchDropDown() {
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter" && searchqueryNavigation) {
-      const selectedUser = suggestedusers.find(
-        (user) => `${user.firstname} ${user.lastname}` === searchqueryNavigation
+      const selectedUser = suggestedusers.find((user) =>
+        user.firstname
+          ? `${user.firstname} ${user.lastname}` === searchqueryNavigation
+          : user.companyName === searchqueryNavigation
       );
       if (selectedUser) {
-        navigate(`/profile/${selectedUser._id}`);
+        navigate(
+          selectedUser.firstname
+            ? `/profile/${selectedUser._id}`
+            : `/profile/${selectedUser._id}`
+        );
       }
     }
   };
@@ -51,16 +57,13 @@ export default function NavbarSearchDropDown() {
       id="free-solo-with-text-demo"
       options={suggestedusers}
       getOptionLabel={(option) => {
-        // Value selected with enter, right from the input
         if (typeof option === "string") {
           return option;
         }
-        // Add "xxx" option created dynamically
-        if (option.inputValue) {
-          return option.inputValue;
+        if (option.firstname && option.lastname) {
+          return `${option.firstname} ${option.lastname}`;
         }
-        // Regular option
-        return `${option.firstname} ${option.lastname}`;
+        return option.companyName || "";
       }}
       renderOption={(props, option) => (
         <li {...props}>
@@ -70,15 +73,26 @@ export default function NavbarSearchDropDown() {
             columnGap={1}
             key={option._id}
           >
-            <Avatar src={option.picturePath} />
+            <Avatar src={option.picturePath || option.logo} />
             <Stack flexDirection={"row"} columnGap={1}>
               <Typography variant="h6" fontWeight={"bold"}>
                 <Link
-                  to={`/profile/${option._id}`}
+                  to={
+                    option.firstname
+                      ? `/profile/${option._id}`
+                      : `/profile/${option._id}`
+                  }
                   style={{ color: "inherit", textDecoration: "none" }}
                 >
-                  {option.firstname} {option.lastname}
+                  {option.firstname && option.lastname
+                    ? `${option.firstname} ${option.lastname}`
+                    : option.companyName || ""}
                 </Link>
+                {option.role === "tester" && (
+                  <Typography variant="body1" color="orange">
+                    {" (Tester)"}
+                  </Typography>
+                )}
               </Typography>
             </Stack>
           </Stack>
@@ -90,7 +104,7 @@ export default function NavbarSearchDropDown() {
           {...params}
           placeholder="Search"
           variant="outlined"
-          sx={{ width: 265 }}
+          sx={{ width: 245, color: "purple" }} // Change text color to white
           value={searchqueryNavigation}
           onChange={handleSearchUsers}
           onKeyDown={handleKeyDown}

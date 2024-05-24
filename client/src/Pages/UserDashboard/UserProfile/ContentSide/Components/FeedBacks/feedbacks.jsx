@@ -1,14 +1,12 @@
-import { useState } from "react";
+// Frontend Component
+
+import { useState, useEffect } from "react";
 import { makeStyles } from "@mui/styles";
-import { Typography, Box, Button, Grid } from "@mui/material";
-import Rating from "@mui/material/Rating";
+import { Typography, Box, Button, Rating, Avatar } from "@mui/material";
 import AddReviewModal from "./addreviewmodal";
-import { useDispatch } from "react-redux";
-import { useEffect } from "react";
-import { getReviews } from "../../../../../../redux/actions/ReviewAction";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { reviewsSelector } from "../../../../../../redux/reducers/ReviewReducer";
-import { useSelector } from "react-redux";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,24 +37,53 @@ const useStyles = makeStyles((theme) => ({
   button: {
     marginTop: theme.spacing(2),
   },
+  avatar: {
+    width: theme.spacing(4),
+    height: theme.spacing(4),
+    marginRight: theme.spacing(1),
+  },
 }));
 
 const FeedbacksPage = () => {
   const classes = useStyles();
-  const [feedbacks, setFeedbacks] = useState([]);
   const { userId } = useParams();
   const myData = JSON.parse(localStorage.getItem("user"));
-  console.log(userId);
-
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(getReviews(userId));
-  }, []);
-  const reviews = useSelector(reviewsSelector);
-  console.log(reviews);
-
   const [openAddReviewModal, setOpenAddReviewModal] = useState(false);
+  const [profileRole, setProfileRole] = useState(null);
+  const [userid, setUserid] = useState(null);
+  const [feeds, setFeeds] = useState([]);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/reviews/company/${userId}/`,
+          { withCredentials: true }
+        );
+        setFeeds(response.data);
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+      }
+    };
+
+    const fetchProfileData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/${userId}`, {
+          withCredentials: true,
+        });
+        const user = response.data;
+        setProfileRole(user.role);
+        setUserid(user._id);
+      } catch (error) {
+        console.error("Error fetching profile data:", error);
+      }
+    };
+
+    fetchReviews();
+    fetchProfileData();
+  }, [userId]);
 
   const handleOpenAddReviewModal = () => {
     setOpenAddReviewModal(true);
@@ -69,21 +96,30 @@ const FeedbacksPage = () => {
   return (
     <Box className={classes.root}>
       <Typography variant="h4" className={classes.title}>
-        Feedbacks ({reviews.length})
+        Feedbacks ({feeds.length})
       </Typography>
 
-      {/* Render feedback items */}
-      {reviews.map((review) => (
+      {feeds.map((review) => (
         <Box key={review._id} className={classes.feedbackItem}>
           <Box className={classes.feedbackHeader}>
-            <Rating
-              className={classes.feedbackRating}
-              value={review.star}
-              readOnly
-            />
-            <Typography variant="subtitle2">
-              {new Date(review.createdAt).toLocaleDateString()}
-            </Typography>
+            <Box display="flex" alignItems="center">
+              <Avatar
+                src={review.userId.picturePath}
+                alt="User Avatar"
+                className={classes.avatar}
+              />
+              <Typography variant="subtitle2">{`${review.userId.firstname} ${review.userId.lastname}`}</Typography>
+            </Box>
+            <Box>
+              <Typography variant="subtitle2">
+                {new Date(review.createdAt).toLocaleDateString()}
+              </Typography>
+              <Rating
+                className={classes.feedbackRating}
+                value={review.star}
+                readOnly
+              />
+            </Box>
           </Box>
           <Typography
             variant="body1"
@@ -92,11 +128,13 @@ const FeedbacksPage = () => {
           >
             {review.description}
           </Typography>
+          <Typography variant="body2" color="textSecondary">
+            Email: {review.userId.email}
+          </Typography>
         </Box>
       ))}
 
-      {/* Add feedback button */}
-      {myData.role == "tester" && (
+      {profileRole === "tester" && userid !== myData._id && (
         <Button
           variant="contained"
           color="primary"
@@ -106,6 +144,7 @@ const FeedbacksPage = () => {
           Add Feedback
         </Button>
       )}
+
       <AddReviewModal
         open={openAddReviewModal}
         onClose={handleCloseAddReviewModal}

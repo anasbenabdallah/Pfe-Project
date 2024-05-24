@@ -1,6 +1,6 @@
 const Post = require("../models/SocialMediaPost.model");
 const UserModel = require("../models/user.model");
-const CompanyModel = require("../models/tester.model");
+const Tester = require("../models/tester.model");
 const Category = require("../models/Category.model");
 
 //create a post
@@ -9,9 +9,9 @@ const CreatePost = async (req, res) => {
   try {
     // Find the current user by ID
     const user = await UserModel.findById(req.userId);
-    const tester = await CompanyModel.findById(req.userId);
+    const tester = await Tester.findById(req.userId);
 
-    // Determine whether the current user is a UserModel or CompanyModel
+    // Determine whether the current user is a UserModel or Tester
     let owner;
     let isUser = true;
     let Model;
@@ -21,7 +21,7 @@ const CreatePost = async (req, res) => {
     } else if (tester) {
       owner = tester;
       isUser = false;
-      Model = CompanyModel;
+      Model = Tester;
     } else {
       throw new Error("User not found");
     }
@@ -32,22 +32,43 @@ const CreatePost = async (req, res) => {
       firstname: isUser ? owner.firstname : undefined,
       lastname: isUser ? owner.lastname : undefined,
       companyName: !isUser ? owner.companyName : undefined,
-      userPicturePath: owner.picturePath || owner.picturePath,
+      userPicturePath: owner.picturePath,
       description: req.body.description,
       postPicturePath: req.body.postPicturePath,
-      postVideoePath: req.body.postVideoPath,
+      postVideoPath: req.body.postVideoPath,
       categories: req.body.categories,
     });
-    savedpost = await newPost.save();
+    const savedPost = await newPost.save();
 
+    // Update the user's or tester's posts array
     const data = await Model.findOneAndUpdate(
       { _id: req.userId },
-      { $push: { posts: savedpost._id } },
+      { $push: { posts: savedPost._id } },
       { new: true }
     ).populate("posts");
 
+    // Send notifications to all users except admins
+    const users = await UserModel.find({ role: { $ne: "admin" } }); // Get all users except admins
+    for (const user of users) {
+      user.notifications.push({
+        message: `A new post has been created by ${
+          isUser ? owner.firstname : owner.companyName
+        }`,
+        post: savedPost._id,
+      });
+      await user.save();
+      sendEmail(
+        user.email,
+        "A new post has been created",
+        `A new post has been created by ${
+          isUser ? owner.firstname : owner.companyName
+        }`
+      );
+    }
+
     res.status(201).json(data);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: err.message });
   }
 };

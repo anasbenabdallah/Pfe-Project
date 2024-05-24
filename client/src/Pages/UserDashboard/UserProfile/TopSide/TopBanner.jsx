@@ -89,6 +89,9 @@ const ProfileInformations = () => {
                   ) : (
                     <Typography variant="h4">
                       {userProfile.companyName}
+                      <Typography variant="body1" color="orange">
+                        {" (Tester)"}
+                      </Typography>
                     </Typography>
                   )}
                 </Stack>

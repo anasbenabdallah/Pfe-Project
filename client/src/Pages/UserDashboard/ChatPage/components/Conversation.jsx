@@ -78,7 +78,7 @@ const Conversation = ({ conversationId, socket, otherUser }) => {
 
   const handleCreateMessage = async (event) => {
     event.preventDefault();
-    socket.emit("sendMessage", {
+    const newMessage = {
       sender: {
         _id: user._id,
         firstname: user.firstname,
@@ -87,17 +87,20 @@ const Conversation = ({ conversationId, socket, otherUser }) => {
       receiverId: otherUser.id,
       message: message,
       createdAt: new Date(),
-      //des argu
-    });
+    };
+
+    socket.emit("sendMessage", newMessage);
     console.log("Sent message:", message);
 
     dispatch(
       CreateMessage(conversationId, message, currentUserId, otherUser.id)
     );
     console.log("otheruser", otherUser);
+
+    // Update the state to include the new message
+    setArrivalMessage((prevMessages) => [...prevMessages, newMessage]);
     setMessage("");
   };
-
   return (
     <div>
       {arrivalMessage.length === 0 ? (

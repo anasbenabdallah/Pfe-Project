@@ -61,7 +61,7 @@ const Leaders = () => {
             justifyContent={"space-between"}
             alignItems={"center"}
           >
-            <Typography variant="h5">Leaders</Typography>
+            <Typography variant="h5">Wyplay best contributers</Typography>
             <RankLink
               underline="hover"
               variant="body2"

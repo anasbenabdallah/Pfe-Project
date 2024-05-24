@@ -1,35 +1,47 @@
 const reviewModel = require("../models/Review.model");
 const challengeModel = require("../models/Challenge.model");
 const ObjectId = require("mongoose").Types.ObjectId;
-
+// a user cannot feedbak tester more then once to avoid spaamming
 const createReview = async (req, res) => {
-  if (req.body.star > 5) {
+  const { companyId, description, star } = req.body;
+  const userId = req.userId; // assuming the user's ID is stored in req.userId
+
+  // Validate the star rating
+  if (star < 1 || star > 5) {
     return res
       .status(400)
       .json({ message: "Star value must be between 1 and 5" });
   }
+
+  // Create a new review instance
   const newReview = new reviewModel({
-    companyId: req.userId,
-    userId: req.body.userId,
-    description: req.body.description,
-    star: req.body.star,
+    companyId,
+    userId,
+    description,
+    star,
   });
 
   try {
-    //fetch our reviews
-    const review = await reviewModel.findOne({
-      userId: req.userId,
-      companyId: req.body.companyId,
-    });
-    console.log(review);
+    // Check if a review already exists for the user and company
+    const existingReview = await reviewModel.findOne({ userId, companyId });
+    if (existingReview) {
+      return res
+        .status(400)
+        .json({ message: "You have already reviewed this tester" });
+    }
 
+    // Save the new review
     const savedReview = await newReview.save();
-    //we should update our challenge after we are giving a review and i'm going to increment my total stars
 
-    await res.status(200).json(savedReview);
+    // Optionally, update related models like challengeModel if needed
+    // This is a placeholder for any additional logic related to challenges
+    // await challengeModel.updateOne({ someCriteria }, { $inc: { totalStars: star } });
+
+    // Respond with the saved review
+    return res.status(201).json(savedReview);
   } catch (error) {
-    console.log(error);
-    return res.status(500).json(error);
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -86,10 +98,27 @@ const deleteReview = async (req, res) => {
     return res.status(500).json(error);
   }
 };
+const getReviewsByCompanyId = async (req, res) => {
+  try {
+    const reviews = await reviewModel
+      .find({
+        companyId: new ObjectId(req.params.companyId),
+      })
+      .populate("userId");
+    res.status(200).json(reviews);
+  } catch (error) {
+    console.error(
+      "Error occurred while retrieving reviews by company ID:",
+      error
+    );
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 
 module.exports = {
   createReview,
   getReviews,
   deleteReview,
   getAllReviews,
+  getReviewsByCompanyId,
 };
