@@ -2,6 +2,7 @@ const Post = require("../models/SocialMediaPost.model");
 const UserModel = require("../models/user.model");
 const Tester = require("../models/tester.model");
 const Category = require("../models/Category.model");
+const mongoose = require("mongoose");
 
 //create a post
 
@@ -35,8 +36,13 @@ const CreatePost = async (req, res) => {
       userPicturePath: owner.picturePath,
       description: req.body.description,
       postPicturePath: req.body.postPicturePath,
-      postVideoPath: req.body.postVideoPath,
       categories: req.body.categories,
+      poll: req.body.poll
+        ? {
+            question: req.body.poll.question,
+            options: req.body.poll.options,
+          }
+        : undefined,
     });
     const savedPost = await newPost.save();
 
@@ -57,13 +63,6 @@ const CreatePost = async (req, res) => {
         post: savedPost._id,
       });
       await user.save();
-      sendEmail(
-        user.email,
-        "A new post has been created",
-        `A new post has been created by ${
-          isUser ? owner.firstname : owner.companyName
-        }`
-      );
     }
 
     res.status(201).json(data);
@@ -72,7 +71,6 @@ const CreatePost = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-
 //update a post
 
 const updateAPost = async (req, res) => {
@@ -89,6 +87,7 @@ const updateAPost = async (req, res) => {
   }
 };
 
+//getFeedPosts
 //getFeedPosts
 const getFeedPosts = async (req, res) => {
   const q = req.query;
@@ -215,6 +214,105 @@ const sharePost = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+const voteForPollOption = async (req, res) => {
+  const { postId, optionId } = req.params;
+
+  try {
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    const option = post.poll.options.id(optionId);
+    if (!option) {
+      return res.status(404).json({ error: "Poll option not found" });
+    }
+
+    // Increment the vote count for the selected poll option
+    option.votesCount += 1;
+    await post.save();
+
+    res.status(200).json(post);
+  } catch (error) {
+    console.error("Error voting for poll option:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+async function addFavoritePost(req, res) {
+  const { userId, postId } = req.params;
+
+  try {
+    const user = await UserModel.findById(userId);
+    if (!user.favoritePosts.includes(postId)) {
+      user.favoritePosts.push(postId);
+      await user.save();
+      res.status(200).send("Post added to favorites");
+    } else {
+      res.status(400).send("Post already in favorites");
+    }
+  } catch (error) {
+    console.error("Error adding favorite post:", error);
+    res.status(500).send("Internal Server Error");
+  }
+}
+
+// Remove a post from favorites
+async function removeFavoritePost(req, res) {
+  const { userId, postId } = parseUserIdAndPostIdFromUrl(req.url);
+
+  if (!userId || !postId) {
+    return res.status(400).send("Invalid URL format");
+  }
+
+  try {
+    const user = await UserModel.findByIdAndUpdate(userId, {
+      $pull: { favoritePosts: postId },
+    });
+
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    return res.status(200).send("Post removed from favorites");
+  } catch (error) {
+    console.error("Error removing favorite post:", error);
+    return res.status(500).send("Internal Server Error");
+  }
+}
+
+function parseUserIdAndPostIdFromUrl(url) {
+  const parts = url.split("/");
+  const userId = parts[parts.length - 3];
+  const postId = parts[parts.length - 1];
+  return { userId, postId };
+}
+// Get favorite posts with all details
+async function getFavoritePosts(req, res) {
+  const { userId } = req.params;
+
+  // Validate ObjectId
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    return res.status(400).send("Invalid userId format");
+  }
+
+  try {
+    const user = await UserModel.findById(userId).populate({
+      path: "favoritePosts",
+      populate: {
+        path: "comments", // Populate the comments field of each favorite post
+        model: "Comment",
+      },
+    });
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    res.status(200).json(user.favoritePosts);
+  } catch (error) {
+    console.error("Error retrieving favorite posts:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
 
 module.exports = {
   CreatePost,
@@ -224,4 +322,8 @@ module.exports = {
   getUserPosts,
   likePost,
   sharePost,
+  voteForPollOption,
+  addFavoritePost,
+  removeFavoritePost,
+  getFavoritePosts,
 };

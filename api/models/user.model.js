@@ -39,6 +39,15 @@ const UserSchema = new mongoose.Schema(
     resetToken: { type: String, default: undefined }, //need it for forget password(verification)
     isFaceRecognition: { type: Boolean, default: false },
     isBanned: { type: Boolean, default: false },
+    favoritePosts: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "SocialMediaPost",
+        },
+      ],
+      default: [],
+    },
 
     posts: {
       type: [
