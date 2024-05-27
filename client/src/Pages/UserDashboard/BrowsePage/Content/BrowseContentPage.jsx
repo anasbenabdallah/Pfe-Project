@@ -55,9 +55,6 @@ const BrowseContentPage = () => {
             <Grid item lg={9} md={9} xs={8} pr={4}>
               <ContestCards />
             </Grid>
-            <Grid item lg={3} md={3} xs={4}>
-              <ContestsFilters />
-            </Grid>
           </Grid>
         )}
         {value === 1 && (

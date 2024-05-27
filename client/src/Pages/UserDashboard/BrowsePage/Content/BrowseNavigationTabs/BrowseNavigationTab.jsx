@@ -39,7 +39,7 @@ const BrowseNavigationTab = ({ changeValue, value }) => {
     <Box sx={{ width: "100%" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs value={value} onChange={changeValue} aria-label="tabs">
-          <Tab label="Contests" />
+          <Tab label="favorite" />
           <Tab label="Jobs" />
         </Tabs>
       </Box>

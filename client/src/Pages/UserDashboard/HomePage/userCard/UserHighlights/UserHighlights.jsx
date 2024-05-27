@@ -24,7 +24,6 @@ const UserHighlights = () => {
               <Stack spacing={2}>
                 <FollowersHighlights />
                 <FollowingsHighlights />
-                <CompletedChallenges />
               </Stack>
             </Stack>
           </CardContent>

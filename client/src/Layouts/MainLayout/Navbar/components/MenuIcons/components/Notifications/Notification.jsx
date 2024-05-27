@@ -34,7 +34,10 @@ const NotificationBell = () => {
           withCredentials: true,
         })
         .then((response) => {
-          setNotifications(response.data);
+          const sortedNotifications = response.data.sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+          );
+          setNotifications(sortedNotifications);
         })
         .catch((error) => {
           console.error(error.message);

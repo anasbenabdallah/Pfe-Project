@@ -10,9 +10,12 @@ import {
   Stack,
   Typography,
   Autocomplete,
+  IconButton,
 } from "@mui/material";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import SmartDisplayIcon from "@mui/icons-material/SmartDisplay";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 //redux
 import { useDispatch, useSelector } from "react-redux";
 import { createPost } from "../../../redux/actions/SocialPostAction";
@@ -32,6 +35,8 @@ export const AddSocialPostModal = ({ open, handleClose }) => {
   const [postFile, setPostFile] = useState(null);
   const [imgPerc, setImgPerc] = useState(0);
   const [videoPerc, setVideoPerc] = useState(0);
+  const [pollQuestion, setPollQuestion] = useState("");
+  const [pollOptions, setPollOptions] = useState([{ id: 1, text: "" }]);
 
   const uploadFile = async () => {
     const storageRef = ref(storage);
@@ -49,7 +54,6 @@ export const AddSocialPostModal = ({ open, handleClose }) => {
     }
   };
 
-  //fghfg
   const handlePostFileChange = (e) => {
     if (e.target.files[0]) {
       setPostFile(e.target.files[0]);
@@ -64,19 +68,44 @@ export const AddSocialPostModal = ({ open, handleClose }) => {
     );
   }, [dispatch]);
 
+  const handleAddOption = () => {
+    setPollOptions([...pollOptions, { id: pollOptions.length + 1, text: "" }]);
+  };
+
+  const handleRemoveOption = (id) => {
+    setPollOptions(pollOptions.filter((option) => option.id !== id));
+  };
+
+  const handleOptionChange = (id, text) => {
+    setPollOptions(
+      pollOptions.map((option) =>
+        option.id === id ? { ...option, text } : option
+      )
+    );
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
       const url = postFile ? await uploadFile() : null;
-      dispatch(
-        createPost({
-          userId,
-          description,
-          categories: selectedCategory,
-          postPicturePath: url,
-        })
-      );
+
+      const postData = {
+        userId,
+        description,
+        categories: selectedCategory,
+        postPicturePath: url,
+      };
+
+      // Include poll data only if pollQuestion is provided and at least one option has text
+      if (pollQuestion && pollOptions.some((option) => option.text.trim())) {
+        postData.poll = {
+          question: pollQuestion,
+          options: pollOptions.filter((option) => option.text.trim()), // Filter out empty options
+        };
+      }
+
+      dispatch(createPost(postData));
       window.location.reload();
     } catch (error) {
       console.log(error);
@@ -169,10 +198,46 @@ export const AddSocialPostModal = ({ open, handleClose }) => {
                 ) : (
                   "Uploading:" + videoPerc
                 )}
-
                 <Typography>Video</Typography>
               </Button>
             </Paper>
+
+            <Typography variant="h6">Create a Poll</Typography>
+            <TextField
+              margin="dense"
+              id="pollQuestion"
+              label="Poll Question"
+              fullWidth
+              variant="outlined"
+              value={pollQuestion}
+              onChange={(event) => setPollQuestion(event.target.value)}
+            />
+            {pollOptions.map((option) => (
+              <Stack key={option.id} direction="row" spacing={1}>
+                <TextField
+                  margin="dense"
+                  label={`Option ${option.id}`}
+                  variant="outlined"
+                  value={option.text}
+                  onChange={(event) =>
+                    handleOptionChange(option.id, event.target.value)
+                  }
+                  fullWidth
+                />
+                <IconButton
+                  aria-label="delete"
+                  onClick={() => handleRemoveOption(option.id)}
+                >
+                  <DeleteOutlineIcon />
+                </IconButton>
+              </Stack>
+            ))}
+            <Button
+              startIcon={<AddCircleOutlineIcon />}
+              onClick={handleAddOption}
+            >
+              Add Option
+            </Button>
           </Stack>
         </DialogContent>
 
@@ -187,7 +252,7 @@ export const AddSocialPostModal = ({ open, handleClose }) => {
           <Button variant="outlined" onClick={handleClose}>
             Cancel
           </Button>
-          <Button variant="contained" onClick={handleSubmit}>
+          <Button variant="contained" type="submit">
             Post
           </Button>
         </Stack>

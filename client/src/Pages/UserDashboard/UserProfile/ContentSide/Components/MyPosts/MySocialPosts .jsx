@@ -85,13 +85,6 @@ const MySocialPosts = () => {
             <Card key={post._id} elevation={0} variant="outlined">
               <CardHeader
                 action={<PostMenuIcon postId={post._id} />}
-                subheader={
-                  <Typography variant="h6" color={"gray"}>
-                    {formatDistance(new Date(post.createdAt), new Date(), {
-                      addSuffix: true,
-                    })}
-                  </Typography>
-                }
                 title={
                   <div>
                     <Link

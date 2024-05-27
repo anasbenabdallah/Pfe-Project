@@ -44,10 +44,9 @@ export const ProfileNavigationTab = ({ changeValue, value }) => {
           aria-label="basic tabs example"
         >
           <Tab label="My Posts" />
-          <Tab label="My Challenges" />
           <Tab label="Followers" />
           <Tab label="Followings" />
-          <Tab label="My Jobs" />
+
           <Tab label="FeedBacks" />
         </Tabs>
       </Box>
