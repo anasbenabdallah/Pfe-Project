@@ -104,19 +104,25 @@ const FeedbacksPage = () => {
           <Box className={classes.feedbackHeader}>
             <Box display="flex" alignItems="center">
               <Avatar
-                src={review.userId.picturePath}
+                src={review?.userId?.picturePath}
                 alt="User Avatar"
                 className={classes.avatar}
               />
-              <Typography variant="subtitle2">{`${review.userId.firstname} ${review.userId.lastname}`}</Typography>
+              <Typography variant="subtitle2">{`${review?.userId?.firstname} ${review?.userId?.lastname}`}</Typography>
             </Box>
             <Box>
               <Typography variant="subtitle2">
                 {new Date(review.createdAt).toLocaleDateString()}
               </Typography>
+              <Typography
+                variant="body1"
+                style={{ color: review?.etat === "traité" ? "green" : "red" }}
+              >
+                {review.etat}
+              </Typography>
               <Rating
                 className={classes.feedbackRating}
-                value={review.star}
+                value={review?.star}
                 readOnly
               />
             </Box>
@@ -129,7 +135,7 @@ const FeedbacksPage = () => {
             {review.description}
           </Typography>
           <Typography variant="body2" color="textSecondary">
-            Email: {review.userId.email}
+            Email: {review?.userId?.email}
           </Typography>
         </Box>
       ))}

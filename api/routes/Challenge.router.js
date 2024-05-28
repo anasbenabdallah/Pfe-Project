@@ -8,9 +8,7 @@ const {
   getChallenge,
   getChallenges,
   getChallengeUsers,
-  getChallengeUserSubmit,
 } = require("../controllers/Challenge.controller");
-const { CreateSubmission } = require("../controllers/submission.controllers");
 
 // Require authentication middleware
 const {
@@ -32,18 +30,13 @@ ChallengeRouter.post(
 ChallengeRouter.get("/single/:id", authenticateToken, getChallenge);
 ChallengeRouter.get("/challenges", getChallenges);
 ChallengeRouter.get("/getChallengeUsers", authenticateToken, getChallengeUsers);
-ChallengeRouter.get(
-  "/getChallengeUserSubmit",
-  authenticateToken,
-  getChallengeUserSubmit
-);
+
 ChallengeRouter.delete(
   "/deleteChallenge/:id",
   authenticateToken,
   deleteChallenge
 );
 
-ChallengeRouter.post("/submission", authenticateToken, CreateSubmission);
 ChallengeRouter.delete("/:id", authenticateToken, deleteChallenge);
 
 module.exports = ChallengeRouter;

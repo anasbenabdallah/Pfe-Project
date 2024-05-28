@@ -4,7 +4,7 @@ const ObjectId = require("mongoose").Types.ObjectId;
 // a user cannot feedbak tester more then once to avoid spaamming
 const createReview = async (req, res) => {
   const { companyId, description, star } = req.body;
-  const userId = req.userId; // assuming the user's ID is stored in req.userId
+  const { userId } = req.params; // Extract userId from the URL parameters
 
   // Validate the star rating
   if (star < 1 || star > 5) {
@@ -32,10 +32,6 @@ const createReview = async (req, res) => {
 
     // Save the new review
     const savedReview = await newReview.save();
-
-    // Optionally, update related models like challengeModel if needed
-    // This is a placeholder for any additional logic related to challenges
-    // await challengeModel.updateOne({ someCriteria }, { $inc: { totalStars: star } });
 
     // Respond with the saved review
     return res.status(201).json(savedReview);
@@ -114,6 +110,39 @@ const getReviewsByCompanyId = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+const updateReviewEtat = async (req, res) => {
+  try {
+    const reviewId = req.params.id;
+    const { etat } = req.body; // Assuming you send the new etat in the request body
+
+    // Check if the provided review ID is valid
+    if (!reviewId) {
+      return res.status(400).json({ error: "Invalid review ID" });
+    }
+
+    // Find the review by ID
+    const review = await reviewModel.findById(reviewId);
+
+    // Check if the review exists
+    if (!review) {
+      return res.status(404).json({ error: "Review not found" });
+    }
+
+    // Update the etat of the review
+    review.etat = etat;
+
+    // Save the updated review
+    await review.save();
+
+    // Return the updated review
+    return res
+      .status(200)
+      .json({ message: "Review etat updated successfully", review });
+  } catch (error) {
+    console.error("Error updating review etat:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
 
 module.exports = {
   createReview,
@@ -121,4 +150,5 @@ module.exports = {
   deleteReview,
   getAllReviews,
   getReviewsByCompanyId,
+  updateReviewEtat,
 };

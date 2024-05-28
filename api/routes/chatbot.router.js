@@ -38,7 +38,7 @@ async function runChat(userInput) {
         role: "user",
         parts: [
           {
-            text: "You are a virtual assistant at Wyplay, a leader in software solutions for TV operators. Your job is to help users understand our services and guide them through our offerings..",
+            text: "You are a virtual assistant at Wyplay, a leader in software solutions for TV operators. Your event is to help users understand our services and guide them through our offerings..",
           },
         ],
       },

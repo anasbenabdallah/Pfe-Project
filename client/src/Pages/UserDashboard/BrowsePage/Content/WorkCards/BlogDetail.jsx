@@ -7,7 +7,7 @@ const labelStyles = { mb: 1, mt: 2, fontSize: "24px", fontWeight: "bold" };
 
 const BlogDetail = () => {
   const navigate = useNavigate();
-  const [job, setJob] = useState();
+  const [event, setJob] = useState();
   const id = useParams().id;
   console.log(id);
   const [inputs, setInputs] = useState({});
@@ -19,23 +19,23 @@ const BlogDetail = () => {
   };
   const fetchDetails = async () => {
     const res = await axios
-      .get(`http://localhost:8000/job/${id}`)
+      .get(`http://localhost:8000/event/${id}`)
       .catch((err) => console.log(err));
     const data = await res.data;
     return data;
   };
   useEffect(() => {
     fetchDetails().then((data) => {
-      setJob(data.job);
+      setJob(data.event);
       setInputs({
-        title: data.job.title,
-        description: data.job.description,
+        title: data.event.title,
+        description: data.event.description,
       });
     });
   }, [id]);
   const sendRequest = async () => {
     const res = await axios
-      .put(`http://localhost:8000/job/update/${id}`, {
+      .put(`http://localhost:8000/event/update/${id}`, {
         title: inputs.title,
         description: inputs.description,
       })
@@ -44,13 +44,13 @@ const BlogDetail = () => {
     const data = await res.data;
     return data;
   };
-  console.log(job);
+  console.log(event);
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(inputs);
     sendRequest()
       .then((data) => console.log(data))
-      .then(() => navigate(`/profile/${job.tester}`));
+      .then(() => navigate(`/profile/${event.tester}`));
   };
 
   return (
@@ -77,7 +77,7 @@ const BlogDetail = () => {
         variant="h2"
         textAlign={"center"}
       >
-        Update Your Job
+        Update Your Event
       </Typography>
       <InputLabel sx={labelStyles}>Title</InputLabel>
       <TextField
@@ -106,7 +106,7 @@ const BlogDetail = () => {
       />
 
       <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-        Update Your Job
+        Update Your Event
       </Button>
     </Box>
   );

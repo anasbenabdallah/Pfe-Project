@@ -91,8 +91,6 @@ const AdminDrawer = () => {
     { name: "Categories", icon: <CategoryIcon />, path: "categories" },
     { name: "Feeds", icon: <CategoryIcon />, path: "FeedBacks" },
 
-    { name: "Evaluation", icon: <ReviewsIcon />, path: "evaluation" },
-
     {
       name: "Logout",
       icon: <LogoutIcon />,

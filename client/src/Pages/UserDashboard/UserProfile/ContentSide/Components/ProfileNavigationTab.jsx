@@ -1,4 +1,3 @@
-//;
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -44,9 +43,10 @@ export const ProfileNavigationTab = ({ changeValue, value }) => {
           aria-label="basic tabs example"
         >
           <Tab label="My Posts" />
+          <Tab label="My Challenges" />
           <Tab label="Followers" />
           <Tab label="Followings" />
-
+          <Tab label="My Events" />
           <Tab label="FeedBacks" />
         </Tabs>
       </Box>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Job from "../../../../BrowsePage/Content/WorkCards/Job";
+import Event from "../../../../BrowsePage/Content/WorkCards/Event";
 import CircularProgress from "@mui/material/CircularProgress";
 
 const MyJobs = () => {
@@ -10,7 +10,7 @@ const MyJobs = () => {
 
   const sendRequest = async () => {
     const res = await axios
-      .get(`http://localhost:8000/job/user/${id}`)
+      .get(`http://localhost:8000/event/user/${id}`)
       .catch((err) => console.log(err));
     const data = await res.data;
     return data;
@@ -45,15 +45,15 @@ const MyJobs = () => {
   return (
     <div>
       {tester && tester.jobs && tester.jobs.length > 0 ? (
-        tester.jobs.map((job, index) => (
-          <Job
-            id={job._id}
+        tester.jobs.map((event, index) => (
+          <Event
+            id={event._id}
             key={index}
             isUser={true}
-            title={job.title}
-            description={job.description}
-            salary={job.salary}
-            imageURL={job.image}
+            title={event.title}
+            description={event.description}
+            imageURL={event.image}
+            participants={event.participants}
             profilpic={tester.picturePath}
             userName={tester.companyName}
           />

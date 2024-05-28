@@ -1,4 +1,4 @@
-line,First Name,Last Name,Age,Gender,Account Level,Years Registered,Performed Languages,Challenges Done,Job Title,Tester,Location,Skills Required,Type,Salary,Job Fit Score
+line,First Name,Last Name,Age,Gender,Account Level,Years Registered,Performed Languages,Challenges Done,Event Title,Tester,Location,Skills Required,Type,Salary,Event Fit Score
 1,Emily,Chen,27,Female,12,3,"JavaScript, HTML, CSS",8,Web Developer,ABC Inc.,"Seattle, WA","JavaScript, React, Node.js",Full-time,"$80,000 to $100,000/year",0.578
 2,Daniel,Nguyen,34,Male,8,5,"Java, Python, SQL",5,Data Analyst,XYZ Co.,"Los Angeles, CA","Data Analysis, SQL, Excel",Full-time,"$70,000 to $90,000/year",0.432
 3,Sophie,Kim,29,Female,5,2,"Swift, Objective-C",2,iOS Developer,PQR Inc.,"San Francisco, CA","Swift, iOS Development, Xcode",Full-time,"$90,000 to $110,000/year",0.627

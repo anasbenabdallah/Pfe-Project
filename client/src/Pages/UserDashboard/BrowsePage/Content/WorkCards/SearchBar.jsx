@@ -4,7 +4,7 @@ import { Search } from "@material-ui/icons";
 const SearchBar = ({ value, onChange }) => {
   return (
     <TextField
-      placeholder="Search Job …"
+      placeholder="Search Event …"
       value={value}
       onChange={onChange}
       fullWidth

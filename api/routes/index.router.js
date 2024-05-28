@@ -9,7 +9,7 @@ const adminRouter = require("./admin.router");
 const SocialMediaPostRouter = require("./SocialMediaPost.router");
 const ChallengeRouter = require("./Challenge.router");
 const companyRouter = require("./tester.router");
-const jobRouter = require("./job.router");
+const jobRouter = require("./event.router");
 const conversationRouter = require("./conversation.router");
 const MessageRouter = require("./messages.router");
 const stripeRouter = require("./stripe.router");
@@ -19,7 +19,7 @@ const CommentRouter = require("./comment.router");
 const chatbotRouter = require("./chatbot.router.js");
 router.use("/chatbot", chatbotRouter);
 
-router.use("/job", jobRouter);
+router.use("/event", jobRouter);
 router.use("/auth", authRouter);
 router.use("/", userRouter);
 router.use("/tester", companyRouter);

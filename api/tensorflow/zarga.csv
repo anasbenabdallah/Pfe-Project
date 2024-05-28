@@ -1,4 +1,4 @@
-line,First Name,Last Name,Age,Gender,Account Level,Years Registered,Performed Languages,Challenges Done,Challenges Submitted,Challenges Won,Job Title,Tester,Location,Skills Required,Type,Salary,Job Fit Score
+line,First Name,Last Name,Age,Gender,Account Level,Years Registered,Performed Languages,Challenges Done,Challenges Submitted,Challenges Won,Event Title,Tester,Location,Skills Required,Type,Salary,Event Fit Score
 6,Samantha,Wong,29,Female,Gold,4,Python,70,60,50,Data Scientist,MNO Inc,Chicago,Python,Full-time,95000,85
 7,David,Kim,31,Male,Silver,3,Java,40,35,15,Software Engineer,PQR Corp,Boston,Java,Full-time,75000,70
 8,Emily,Tan,33,Female,Gold,6,Python,150,120,80,Data Analyst,STU Ltd,Sydney,Python,Full-time,85000,75

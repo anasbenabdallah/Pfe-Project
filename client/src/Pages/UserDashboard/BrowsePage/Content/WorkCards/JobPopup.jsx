@@ -51,7 +51,7 @@ const JobPopup = ({
   const handleApply = async (userId) => {
     try {
       const response = await axios.put(
-        `http://localhost:8000/job/jobs/${jobId}/apply/${userId}`
+        `http://localhost:8000/event/jobs/${jobId}/apply/${userId}`
       );
       setSnackbarMessage(response.data);
       setSnackbarSeverity("success");
@@ -66,7 +66,7 @@ const JobPopup = ({
   const handleUnapply = async (userId) => {
     try {
       const response = await axios.put(
-        `http://localhost:8000/job/jobs/${jobId}/unapply/${userId}`
+        `http://localhost:8000/event/jobs/${jobId}/unapply/${userId}`
       );
       setSnackbarMessage(response.data);
       setSnackbarSeverity("success");
@@ -107,7 +107,7 @@ const JobPopup = ({
                     }}
                     onClick={() => handleApply(userId)}
                   >
-                    Apply
+                    Participate
                   </Button>
                   <Button
                     variant="contained"
@@ -123,7 +123,7 @@ const JobPopup = ({
                     }}
                     onClick={() => handleUnapply(userId)}
                   >
-                    Unapply
+                    UnParticipate
                   </Button>
                 </Stack>
               }
@@ -142,7 +142,7 @@ const JobPopup = ({
                       alignItems={"center"}
                       columnGap={"0.3rem"}
                     >
-                      <Typography variant="h4">Job Title :</Typography>
+                      <Typography variant="h4">Event Title :</Typography>
                     </Stack>
                     <Typography variant="h4">{title}</Typography>
                   </Stack>

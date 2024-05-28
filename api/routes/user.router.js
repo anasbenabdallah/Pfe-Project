@@ -25,6 +25,7 @@ const {
   getReviews,
   getAllReviews,
   getReviewsByCompanyId,
+  updateReviewEtat,
 } = require("../controllers/review.controller");
 
 const {
@@ -67,8 +68,9 @@ userRouter.get(
   getUserNotifications
 );
 userRouter.get("/bayern/getallreviews", authenticateToken, getAllReviews);
+userRouter.put("/bayerns/:id", authenticateToken, updateReviewEtat);
 userRouter.get("/users/stats", authenticateToken, getUserStats);
-userRouter.post("/review/create", authenticateToken, createReview);
+userRouter.post("/review/create/:userId", authenticateToken, createReview);
 userRouter.get("/reviews/:id", authenticateToken, getReviews);
 userRouter.get("/reviews/company/:companyId", getReviewsByCompanyId); // New route for reviews by company ID
 

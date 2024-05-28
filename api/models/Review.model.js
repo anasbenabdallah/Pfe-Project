@@ -24,6 +24,11 @@ const ReviewSchema = new mongoose.Schema(
       required: true,
       enum: [1, 2, 3, 4, 5],
     },
+    etat: {
+      type: String,
+      enum: ["traité", "non traité"],
+      default: "non traité",
+    },
   },
   { timestamps: true }
 );

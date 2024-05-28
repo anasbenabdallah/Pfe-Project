@@ -79,8 +79,8 @@ export const NotificationsModal = ({ open, handleClose }) => {
                 <ListItemAvatar>
                   <Avatar
                     src={
-                      notification?.job
-                        ? notification?.job.tester?.picturePath
+                      notification?.event
+                        ? notification?.event.tester?.picturePath
                         : myData.picturePath
                     }
                   />
@@ -89,14 +89,14 @@ export const NotificationsModal = ({ open, handleClose }) => {
                   primary={
                     <React.Fragment>
                       <Typography variant="h5">
-                        {notification.job
-                          ? notification?.job.tester?.companyName
+                        {notification.event
+                          ? notification?.event.tester?.companyName
                           : myData.firstname}
                       </Typography>
                       <Typography variant="body1" noWrap>
                         {notification.message}
                         <Typography component="span" fontWeight="bold">
-                          {notification.job ? notification.job.title : ""}
+                          {notification.event ? notification.event.title : ""}
                         </Typography>
                       </Typography>
                     </React.Fragment>

@@ -14,7 +14,7 @@ const {
   acceptApplier,
   getAcceptedAppliers,
   getSortedAppliers,
-} = require("../controllers/job.controller");
+} = require("../controllers/event.controller");
 
 jobRouter.post("/jobs/add", addJob);
 jobRouter.get("/", getAllJobs);

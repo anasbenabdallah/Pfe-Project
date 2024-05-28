@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Job from "./Job";
+import Event from "./Event";
 import JobPopup from "./JobPopup";
 import { Pagination, Button } from "@mui/material";
 import SearchBar from "./SearchBar";
@@ -14,20 +14,20 @@ const AllJobs = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const [sortOrder, setSortOrder] = useState("asc"); // "asc" for ascending, "desc" for descending
-  const [sortBy, setSortBy] = useState("salary"); // "salary" for sorting by salary
+  const [sortBy, setSortBy] = useState("participants"); // "salary" for sorting by salary
 
   const JOBS_PER_PAGE = 9;
 
   const sendRequest = async () => {
     const res = await axios
-      .get("http://localhost:8000/job")
+      .get("http://localhost:8000/event")
       .catch((err) => console.log(err));
     const data = await res.data;
     return data;
   };
 
-  const handleJobClick = (job) => {
-    setSelectedJob(job);
+  const handleJobClick = (event) => {
+    setSelectedJob(event);
   };
 
   const handlePageChange = (event, value) => {
@@ -39,13 +39,15 @@ const AllJobs = () => {
     setUserId(user._id);
     sendRequest()
       .then((data) =>
-        setJobs(data.jobs.filter((job) => job.tester._id !== user._id))
+        setJobs(data.jobs.filter((event) => event.tester._id !== user._id))
       )
       .finally(() => setIsLoading(false));
   }, []);
 
   const filteredJobs = jobs
-    .filter((job) => job.title.toLowerCase().includes(searchTerm.toLowerCase()))
+    .filter((event) =>
+      event.title.toLowerCase().includes(searchTerm.toLowerCase())
+    )
     .sort((a, b) => {
       if (sortOrder === "asc") {
         return a[sortBy] - b[sortBy];
@@ -102,20 +104,20 @@ const AllJobs = () => {
         />
       )}
       {paginatedJobs.length > 0 ? (
-        paginatedJobs.map((job, index) => (
-          <Job
+        paginatedJobs.map((event, index) => (
+          <Event
             key={index}
-            id={job._id}
-            title={job.title}
-            description={job.description}
-            salary={job.salary}
-            imageURL={job.image}
-            profilpic={job.tester.picturePath}
-            userName={job.tester.companyName}
-            companyID={job.tester._id}
-            isUser={userId === job.tester._id}
+            id={event._id}
+            title={event.title}
+            description={event.description}
+            imageURL={event.image}
+            profilpic={event.tester.picturePath}
+            participants={event.participants}
+            userName={event.tester.companyName}
+            companyID={event.tester._id}
+            isUser={userId === event.tester._id}
             userId={userId}
-            onClick={() => handleJobClick(job)}
+            onClick={() => handleJobClick(event)}
           />
         ))
       ) : (

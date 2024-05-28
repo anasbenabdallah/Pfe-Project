@@ -26,7 +26,7 @@ const DashboardSecondRow = () => {
             <CardContent sx={{ height: "100%" }}>
               <Stack spacing={2}>
                 <Typography variant="h6">This Week Statistics</Typography>
-                <Typography variant="h3">$7,650</Typography>
+                <Typography variant="h3">Total Hours:333.4 hours</Typography>
               </Stack>
               <Grid item xs={12}>
                 <MonthlyBarChart />

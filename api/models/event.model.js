@@ -18,8 +18,10 @@ const JobSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
-  salary: { type: Number, required: true },
-
+  participants: {
+    type: Number,
+    default: 0, // Initialize participants to 0
+  },
   tester: {
     type: mongoose.Types.ObjectId,
     ref: "Tester",
@@ -29,4 +31,4 @@ const JobSchema = new mongoose.Schema({
   acceptedAppliers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
 });
 
-module.exports = mongoose.model("Job", JobSchema);
+module.exports = mongoose.model("Event", JobSchema);

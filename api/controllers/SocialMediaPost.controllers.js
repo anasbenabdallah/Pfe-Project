@@ -49,7 +49,7 @@ const CreatePost = async (req, res) => {
     // Update the user's or tester's posts array
     const data = await Model.findOneAndUpdate(
       { _id: req.userId },
-      { $push: { posts: savedPost._id } },
+      { $push: { posts: savedPost._id }, $inc: { score: 5 } }, // Increment score by 5
       { new: true }
     ).populate("posts");
 
@@ -243,7 +243,18 @@ async function addFavoritePost(req, res) {
   const { userId, postId } = req.params;
 
   try {
-    const user = await UserModel.findById(userId);
+    let user = await UserModel.findById(userId);
+    let isTester = false;
+
+    if (!user) {
+      user = await Tester.findById(userId);
+      isTester = true;
+    }
+
+    if (!user) {
+      return res.status(404).send("User or Tester not found");
+    }
+
     if (!user.favoritePosts.includes(postId)) {
       user.favoritePosts.push(postId);
       await user.save();
@@ -266,13 +277,20 @@ async function removeFavoritePost(req, res) {
   }
 
   try {
-    const user = await UserModel.findByIdAndUpdate(userId, {
-      $pull: { favoritePosts: postId },
-    });
+    let user = await UserModel.findById(userId);
+    let isTester = false;
 
     if (!user) {
-      return res.status(404).send("User not found");
+      user = await Tester.findById(userId);
+      isTester = true;
     }
+
+    if (!user) {
+      return res.status(404).send("User or Tester not found");
+    }
+
+    user.favoritePosts.pull(postId);
+    await user.save();
 
     return res.status(200).send("Post removed from favorites");
   } catch (error) {
@@ -297,16 +315,28 @@ async function getFavoritePosts(req, res) {
   }
 
   try {
-    const user = await UserModel.findById(userId).populate({
+    let user = await UserModel.findById(userId).populate({
       path: "favoritePosts",
       populate: {
-        path: "comments", // Populate the comments field of each favorite post
+        path: "comments",
         model: "Comment",
       },
     });
+
     if (!user) {
-      return res.status(404).send("User not found");
+      user = await Tester.findById(userId).populate({
+        path: "favoritePosts",
+        populate: {
+          path: "comments",
+          model: "Comment",
+        },
+      });
     }
+
+    if (!user) {
+      return res.status(404).send("User or Tester not found");
+    }
+
     res.status(200).json(user.favoritePosts);
   } catch (error) {
     console.error("Error retrieving favorite posts:", error);

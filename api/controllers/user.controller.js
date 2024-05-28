@@ -2,7 +2,7 @@ const userSchema = require("../models/user.model");
 const companySchema = require("../models/tester.model");
 const challengeSchema = require("../models/Challenge.model");
 const bcrypt = require("bcrypt");
-const Job = require("../models/job.model");
+const Event = require("../models/event.model");
 const { pick } = require("lodash");
 
 // ==============================|| EditProfile ||============================== //
@@ -351,19 +351,21 @@ const getUserNotifications = async (req, res) => {
     const notifications = await Promise.all(
       user.notifications.map(async (notification) => {
         if (
-          notification.job &&
-          !processedJobs.has(notification.job.toString())
+          notification.event &&
+          !processedJobs.has(notification.event.toString())
         ) {
-          processedJobs.add(notification.job.toString());
-          const job = await Job.findById(notification.job).populate("tester");
-          console.log(job);
+          processedJobs.add(notification.event.toString());
+          const event = await Event.findById(notification.event).populate(
+            "tester"
+          );
+          console.log(event);
 
-          if (job) {
-            notification.job = job;
+          if (event) {
+            notification.event = event;
             return {
               message: notification.message,
               createdAt: notification.createdAt,
-              job: job,
+              event: event,
               challenge: null,
             };
           }
@@ -375,7 +377,7 @@ const getUserNotifications = async (req, res) => {
             return {
               message: notification.message,
               createdAt: notification.createdAt,
-              job: null,
+              event: null,
               challenge: challenge,
             };
           }

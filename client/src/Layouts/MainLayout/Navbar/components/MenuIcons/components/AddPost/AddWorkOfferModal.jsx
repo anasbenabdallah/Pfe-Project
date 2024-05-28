@@ -25,7 +25,7 @@ export const AddWorkOfferModal = ({ open, handleClose }) => {
   const [inputs, setInputs] = useState({
     title: "",
     description: "",
-    salary: "",
+
     imageFile: null,
   });
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -56,10 +56,10 @@ export const AddWorkOfferModal = ({ open, handleClose }) => {
   const sendRequest = async () => {
     try {
       const imageURL = inputs.imageFile ? await uploadImageToFirebase() : "";
-      const res = await axios.post("http://localhost:8000/job/jobs/add", {
+      const res = await axios.post("http://localhost:8000/event/jobs/add", {
         title: inputs.title,
         description: inputs.description,
-        salary: inputs.salary,
+
         image: imageURL,
         tester: JSON.parse(localStorage.getItem("user"))._id,
       });
@@ -76,12 +76,6 @@ export const AddWorkOfferModal = ({ open, handleClose }) => {
     console.log(inputs);
 
     // check if salary is a number
-    if (isNaN(inputs.salary)) {
-      setSnackbarMessage("salary should be a number");
-      setSnackbarSeverity("success");
-      setSnackbarOpen(true);
-      return;
-    }
 
     sendRequest()
       .then((data) => console.log(data))
@@ -96,12 +90,12 @@ export const AddWorkOfferModal = ({ open, handleClose }) => {
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
       <Stack spacing={1}>
-        <DialogTitle variant="h5">Create a Job Offer</DialogTitle>
+        <DialogTitle variant="h5">Create a Event Offer</DialogTitle>
         <Divider />
         <DialogContent>
           <Stack spacing={2}>
             <form onSubmit={handleSubmit}>
-              <InputLabel>Job Title</InputLabel>
+              <InputLabel>Event Title</InputLabel>
               <TextField
                 name="title"
                 onChange={handleChange}
@@ -114,7 +108,7 @@ export const AddWorkOfferModal = ({ open, handleClose }) => {
                 label="Title"
                 autoFocus
               />
-              <InputLabel>Job Description</InputLabel>
+              <InputLabel>Event Description</InputLabel>
               <TextField
                 name="description"
                 onChange={handleChange}
@@ -127,19 +121,6 @@ export const AddWorkOfferModal = ({ open, handleClose }) => {
                 label="Description"
                 multiline
                 rows={4}
-              />
-              <InputLabel>Salary in USD</InputLabel>
-              <TextField
-                name="salary"
-                onChange={handleChange}
-                value={inputs.salary}
-                margin="normal"
-                variant="outlined"
-                required
-                fullWidth
-                id="salary"
-                label="salary $"
-                autoFocus
               />
 
               <Paper variant="outlined" sx={{ padding: "5px" }}>
@@ -163,7 +144,7 @@ export const AddWorkOfferModal = ({ open, handleClose }) => {
                   Cancel
                 </Button>
                 <Button variant="contained" type="submit">
-                  Post a job offer
+                  Post a event offer
                 </Button>
               </Stack>
             </form>

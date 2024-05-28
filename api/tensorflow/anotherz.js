@@ -14,7 +14,7 @@ async function sortappliers(users) {
     parseFloat(d["Challenges Done"]),
   ]);
   console.log(inputs);
-  const labels = data.map((d) => parseFloat(d["Job Fit Score"]));
+  const labels = data.map((d) => parseFloat(d["Event Fit Score"]));
   const inputTensor = tf.tensor2d(inputs);
   const inputMin = inputTensor.min(0);
   const inputMax = inputTensor.max(0);
@@ -41,11 +41,11 @@ async function sortappliers(users) {
         );
         predictionssum = predictionssum + prediction.dataSync()[0];
       }
-      console.log(`Predicted job score: ${index}  ${predictionssum}`);
+      console.log(`Predicted event score: ${index}  ${predictionssum}`);
       return { ...user.toObject(), jobScore: predictionssum };
     })
   );
-  // Sort users by job score
+  // Sort users by event score
   const sortedPredictions = predictions.sort((a, b) => b.jobScore - a.jobScore);
   console.log("test", sortedPredictions);
   return sortedPredictions;

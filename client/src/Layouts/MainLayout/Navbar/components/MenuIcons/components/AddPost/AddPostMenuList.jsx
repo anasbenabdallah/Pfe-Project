@@ -127,7 +127,7 @@ const AddPostMenuList = () => {
             <ListItemIcon>
               <WorkIcon fontSize="small" />
             </ListItemIcon>
-            Add work offer
+            Add Event
           </MenuItem>
         )}
         {myData.role === "tester" && (

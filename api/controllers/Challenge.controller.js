@@ -103,28 +103,10 @@ const getChallengeUsers = async (req, res) => {
   }
 };
 
-const getChallengeUserSubmit = async (req, res) => {
-  try {
-    const challengeId = req.query.challengeId; // Get idChallenge from the query parameter
-    const userId = req.query.userId; // Get idUser from the query parameter
-    const Challenge = await ChallengeModel.findById(challengeId).populate({
-      path: "submissions",
-    });
-    const ChallengeUserSubmit = Challenge.submissions.filter(
-      (submission) => submission.userId == userId
-    );
-
-    res.status(200).json(ChallengeUserSubmit);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
-
 module.exports = {
   CreateChallenge,
   deleteChallenge,
   getChallenge,
   getChallenges,
   getChallengeUsers,
-  getChallengeUserSubmit,
 };

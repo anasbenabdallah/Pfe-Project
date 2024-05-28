@@ -40,15 +40,6 @@ const ChallengeSchema = new mongoose.Schema(
       ],
       default: [],
     },
-    submissions: {
-      type: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Submission",
-        },
-      ],
-      default: [],
-    },
   },
   { timestamps: true }
 );

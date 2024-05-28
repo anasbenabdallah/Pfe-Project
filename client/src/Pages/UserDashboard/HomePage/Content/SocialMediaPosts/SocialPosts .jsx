@@ -1,5 +1,3 @@
-import { Favorite, FavoriteBorder, MoreVert, Share } from "@mui/icons-material";
-import AddCommentOutlinedIcon from "@mui/icons-material/AddCommentOutlined";
 import { useEffect, useState, useMemo } from "react";
 import {
   Avatar,
@@ -13,28 +11,36 @@ import {
   Stack,
   Typography,
   Button,
+  Snackbar,
+  Alert,
 } from "@mui/material";
+import { Favorite, FavoriteBorder, MoreVert, Share } from "@mui/icons-material";
+import AddCommentOutlinedIcon from "@mui/icons-material/AddCommentOutlined";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import { formatDistance } from "date-fns";
 import { makeStyles } from "@mui/styles";
-
 import { useSelector, useDispatch } from "react-redux";
 import {
   likePost,
   getFeedPosts,
 } from "../../../../../redux/actions/SocialPostAction";
-
 import PostMenuIcon from "./components/PostMenuIcon";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import CommentButton from "../../../../../Components/shared/comments/CommentButton";
 import ReactPlayer from "react-player";
 import screenfull from "screenfull";
+
 const useStyles = makeStyles({
   button: {
     "&:hover": {
       backgroundColor: "black", // Change the background color on hover
     },
+  },
+  card: {
+    border: "1px solid #e0e0e0",
+    borderRadius: "30px",
+    boxShadow: "8px 8px 8px rgba(0, 0, 0, 0.2)",
   },
 });
 
@@ -48,6 +54,8 @@ const SocialPosts = (props) => {
   const [isLoading, setIsLoading] = useState(false); // Add loading
   const [isLiked, setIsLiked] = useState({});
   const [disabledOptions, setDisabledOptions] = useState({});
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertOpen, setAlertOpen] = useState(false);
 
   useEffect(() => {
     dispatch(getFeedPosts()).catch(() => console.log("Error loading posts"));
@@ -64,8 +72,6 @@ const SocialPosts = (props) => {
       return new Date(b.createdAt) - new Date(a.createdAt);
     });
   }, [posts]);
-
-  console.log("sortedpost:", sortedPosts);
 
   const sharePost = async (postId, userId) => {
     try {
@@ -108,6 +114,7 @@ const SocialPosts = (props) => {
       console.error("Error voting for poll option:", error);
     }
   };
+
   const handleAddFavorite = async (postId) => {
     try {
       const response = await axios.post(
@@ -118,20 +125,31 @@ const SocialPosts = (props) => {
         }
       );
 
-      console.log(response.data); // Log the response for debugging
-      // Assuming the response contains a message indicating success
-      // You can show a success message or update the UI accordingly
+      if (response.data === "Post added to favorites") {
+        setAlertMessage("Post added to favorites");
+      } else if (response.data === "Post already in favorites") {
+        setAlertMessage("Post already in favorites");
+      }
+
+      setAlertOpen(true);
     } catch (error) {
       console.error("Error adding post to favorites:", error);
-      // Handle error - show error message or log it
+      setAlertMessage("post already in favorites");
+      setAlertOpen(true);
     }
   };
+
   const handleBookmarkClick = (postId) => {
     setIsBookmarked((prev) => ({
       ...prev,
       [postId]: !prev[postId],
     }));
   };
+
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+  };
+
   return (
     <div>
       <Stack spacing={2}>
@@ -139,7 +157,12 @@ const SocialPosts = (props) => {
           <Typography>Loading posts...</Typography>
         ) : Array.isArray(sortedPosts) ? (
           sortedPosts.map((post, index) => (
-            <Card key={post._id} elevation={0} variant="outlined">
+            <Card
+              key={post._id}
+              elevation={0}
+              variant="outlined"
+              className={classes.card}
+            >
               <CardHeader
                 action={<PostMenuIcon postId={post._id} />}
                 title={
@@ -189,7 +212,7 @@ const SocialPosts = (props) => {
                       >
                         <Typography>{option.text}</Typography>
                       </Button>
-                      <Typography>{option.votesCount}votes</Typography>
+                      <Typography>{option.votesCount} votes</Typography>
                       <Typography>
                         {(
                           (option.votesCount /
@@ -229,26 +252,34 @@ const SocialPosts = (props) => {
                     onClick={() => sharePost(post._id)}
                   >
                     <Share />
+                    <Typography variant="h6">{post.shareCount}</Typography>
                   </IconButton>
-                  <BookmarkIcon
+                  <IconButton
                     aria-label="add to favorites"
                     onClick={() => handleAddFavorite(post._id)}
                   >
-                    {/* Show filled heart if the post is already in favorites */}
-                    {post.favoritePosts &&
-                    post.favoritePosts.includes(loggedInUserId) ? (
-                      <Favorite sx={{ color: "red" }} />
-                    ) : (
-                      <FavoriteBorder />
-                    )}
-                  </BookmarkIcon>
-                  <Typography variant="h6">{post.shareCount}</Typography>
+                    <BookmarkIcon sx={{ color: "gold" }} />
+                  </IconButton>
                 </Stack>
               </CardActions>
             </Card>
           ))
         ) : null}
       </Stack>
+      <Snackbar
+        open={alertOpen}
+        autoHideDuration={2000} // fetch alert for 3second then disappear
+        onClose={handleAlertClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }} // this will control the positon of alert on the web page
+      >
+        <Alert
+          onClose={handleAlertClose}
+          severity="info"
+          sx={{ width: "100%" }}
+        >
+          {alertMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

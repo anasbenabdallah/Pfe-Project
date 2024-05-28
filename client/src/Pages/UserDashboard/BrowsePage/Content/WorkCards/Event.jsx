@@ -20,23 +20,12 @@ import {
 import Participants from "./Appliers";
 import styled from "styled-components";
 import { FaMoneyBill } from "react-icons/fa";
-const Salary = styled.div`
-  color: green;
-  font-weight: bold;
-  font-size: 1.2em;
-  display: flex;
-  align-items: center;
-`;
 
-const MoneyIcon = styled(FaMoneyBill)`
-  margin-right: 5px;
-`;
-
-const Job = ({
+const Event = ({
   title,
   description,
   imageURL,
-  salary,
+  participants,
   userName,
   isUser,
   profilpic,
@@ -60,7 +49,7 @@ const Job = ({
 
   const deleteRequest = async () => {
     const res = await axios
-      .delete(`http://localhost:8000/job/${id}`)
+      .delete(`http://localhost:8000/event/${id}`)
       .catch((err) => console.log(err));
     const data = await res.data;
     return data;
@@ -114,18 +103,19 @@ const Job = ({
               component="img"
               height="194"
               image={imageURL}
-              alt="Job Image"
+              alt="Event Image"
             />
             <CardContent>
               <Stack spacing={2}>
                 <Stack>
                   <Typography variant="subtitle1">{title}</Typography>
-                  <Salary>
-                    <MoneyIcon />
-                    {salary}$ Per Month
-                  </Salary>
+
                   <Typography variant="body1" color="text.secondary" noWrap>
                     {description}
+                  </Typography>
+                  <Typography variant="body1" color="text.secondary" noWrap>
+                    Participants: {participants}{" "}
+                    {/* Display participants here */}
                   </Typography>
                 </Stack>
               </Stack>
@@ -163,18 +153,19 @@ const Job = ({
               component="img"
               height="194"
               image={imageURL}
-              alt="Job Image"
+              alt="Event Image"
             />
             <CardContent>
               <Stack spacing={2}>
                 <Stack>
                   <Typography variant="subtitle1">{title}</Typography>
-                  <Salary>
-                    <MoneyIcon />
-                    {salary}$ Per month
-                  </Salary>
+
                   <Typography variant="body1" color="text.secondary" noWrap>
                     {description}
+                  </Typography>
+                  <Typography variant="body1" color="text.secondary" noWrap>
+                    Participants: {participants}{" "}
+                    {/* Display participants here */}
                   </Typography>
                 </Stack>
               </Stack>
@@ -200,4 +191,4 @@ const Job = ({
   );
 };
 
-export default Job;
+export default Event;

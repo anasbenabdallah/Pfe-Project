@@ -17,7 +17,7 @@ const companySchema = new mongoose.Schema(
     verified: { type: Boolean, default: false },
     description: { type: String },
     role: { type: String, default: "tester" },
-    jobs: [{ type: mongoose.Types.ObjectId, ref: "Job", required: true }],
+    jobs: [{ type: mongoose.Types.ObjectId, ref: "Event", required: true }],
     balance: { type: Number, default: 0.0 },
     dateoffoundation: { type: Date },
     phoneNumber: {
@@ -41,6 +41,15 @@ const companySchema = new mongoose.Schema(
       ],
       default: [],
     },
+    favoritePosts: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "SocialMediaPost",
+        },
+      ],
+      default: [],
+    },
     challenges: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -51,7 +60,7 @@ const companySchema = new mongoose.Schema(
       {
         message: String,
         createdAt: { type: Date, default: Date.now },
-        job: { type: mongoose.Schema.Types.ObjectId, ref: "Job" },
+        event: { type: mongoose.Schema.Types.ObjectId, ref: "Event" },
         challenge: { type: mongoose.Schema.Types.ObjectId, ref: "Challenge" },
         user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
       },

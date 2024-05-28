@@ -68,15 +68,6 @@ const UserSchema = new mongoose.Schema(
       default: [],
     },
 
-    submissions: {
-      type: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Submission",
-        },
-      ],
-      default: [],
-    },
     messages: {
       type: [
         {
@@ -88,7 +79,7 @@ const UserSchema = new mongoose.Schema(
     },
     notifications: [
       {
-        job: { type: mongoose.Schema.Types.ObjectId, ref: "Job" },
+        event: { type: mongoose.Schema.Types.ObjectId, ref: "Event" },
         message: String,
         createdAt: { type: Date, default: Date.now },
       },

@@ -27,6 +27,7 @@ const AddReviewModal = ({ open, onClose }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const myData = JSON.parse(localStorage.getItem("user"));
+  const trusuerid = myData._id;
   const { userId } = useParams();
 
   const [review, setReview] = useState({
@@ -51,10 +52,15 @@ const AddReviewModal = ({ open, onClose }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
+      console.log("Submitting review with data:", {
+        companyId: userId,
+        description: review.description,
+        star: review.star,
+      });
+
       await axios.post(
-        "http://localhost:8000/review/create",
+        `http://localhost:8000/review/create/${trusuerid}`,
         {
-          userId: myData._id,
           companyId: userId,
           description: review.description,
           star: review.star,
@@ -67,6 +73,7 @@ const AddReviewModal = ({ open, onClose }) => {
         star: 0,
       });
       onClose();
+      window.location.reload();
     } catch (error) {
       if (
         error.response &&

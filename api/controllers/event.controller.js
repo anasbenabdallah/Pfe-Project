@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
 const User = require("../models/user.model");
-const Job = require("../models/job.model");
+const Event = require("../models/event.model");
 const Tester = require("../models/tester.model");
 const { sendEmail } = require("../middlewares/mail.middleware");
 const { sortappliers } = require("../tensorflow/anotherz");
 
 const addJob = async (req, res, next) => {
-  const { title, description, salary, image, tester } = req.body;
+  const { title, description, image, tester } = req.body;
 
   let existingCompany;
   try {
@@ -17,20 +17,20 @@ const addJob = async (req, res, next) => {
   if (!existingCompany) {
     return res
       .status(400)
-      .json({ message: "Unable TO FInd tester By This ID" });
+      .json({ message: "Unable to find tester by this ID" });
   }
-  const job = new Job({
+  const event = new Event({
     title,
     description,
-    salary,
     image,
     tester,
+    participants: 0, // Initialize participants to 0
   });
   try {
     const session = await mongoose.startSession();
     session.startTransaction();
-    await job.save({ session });
-    existingCompany.jobs.push(job);
+    await event.save({ session });
+    existingCompany.jobs.push(event);
     await existingCompany.save({ session });
     await session.commitTransaction();
   } catch (err) {
@@ -38,18 +38,18 @@ const addJob = async (req, res, next) => {
     return res.status(500).json({ message: err });
   }
 
-  return res.status(200).json({ job });
+  return res.status(200).json({ event });
 };
 ///
 const getAllJobs = async (req, res, next) => {
   let jobs;
   try {
-    jobs = await Job.find().populate("tester");
+    jobs = await Event.find().populate("tester");
   } catch (err) {
     return console.log(err);
   }
   if (!jobs) {
-    return res.status(404).json({ message: "No Jobs Found" });
+    return res.status(404).json({ message: "No Events Found" });
   }
   return res.status(200).json({ jobs });
 };
@@ -57,47 +57,47 @@ const getAllJobs = async (req, res, next) => {
 const updateJob = async (req, res, next) => {
   const { title, description } = req.body;
   const jobId = req.params.id;
-  let job;
+  let event;
   try {
-    job = await Job.findByIdAndUpdate(jobId, {
+    event = await Event.findByIdAndUpdate(jobId, {
       title,
       description,
     });
   } catch (err) {
     return console.log(err);
   }
-  if (!job) {
-    return res.status(500).json({ message: "Unable To Update The Job" });
+  if (!event) {
+    return res.status(500).json({ message: "Unable To Update The Event" });
   }
-  return res.status(200).json({ job });
+  return res.status(200).json({ event });
 };
 //
 const getById = async (req, res, next) => {
   const id = req.params.id;
-  let job;
+  let event;
   try {
-    job = await Job.findById(id);
+    event = await Event.findById(id);
   } catch (err) {
     return console.log(err);
   }
-  if (!job) {
-    return res.status(404).json({ message: "No Job Found" });
+  if (!event) {
+    return res.status(404).json({ message: "No Event Found" });
   }
-  return res.status(200).json({ job });
+  return res.status(200).json({ event });
 };
 //
 const deleteJob = async (req, res, next) => {
   const id = req.params.id;
 
-  let job;
+  let event;
   try {
-    job = await Job.findByIdAndRemove(id).populate("tester");
-    await job.tester.jobs.pull(job);
-    await job.tester.save();
+    event = await Event.findByIdAndRemove(id).populate("tester");
+    await event.tester.jobs.pull(event);
+    await event.tester.save();
   } catch (err) {
     console.log(err);
   }
-  if (!job) {
+  if (!event) {
     return res.status(500).json({ message: "Unable To Delete" });
   }
   return res.status(200).json({ message: "Successfully Delete" });
@@ -112,37 +112,39 @@ const getByUserId = async (req, res, next) => {
     return console.log(err);
   }
   if (!companyJobs) {
-    return res.status(404).json({ message: "No Job Found" });
+    return res.status(404).json({ message: "No Event Found" });
   }
   return res.status(200).json({ tester: companyJobs });
 };
 ////
 const applyJob = async (req, res) => {
   try {
-    const job = await Job.findById(req.params.jobId).exec();
-    if (!job) return res.status(400).json("Job not found");
+    const event = await Event.findById(req.params.jobId).exec();
+    if (!event) return res.status(400).json("Event not found");
 
     const user = await User.findById(req.params.userId).exec();
     if (!user) return res.status(400).json("User not found");
 
     // Check if user has already applied
-    if (job.appliers.includes(req.params.userId))
-      return res.status(400).json("You have already applied for this job");
+    if (event.appliers.includes(req.params.userId))
+      return res.status(400).json("You have already applied for this event");
 
     // Check if user has already been accepted
-    if (job.acceptedAppliers.includes(req.params.userId))
+    if (event.acceptedAppliers.includes(req.params.userId))
       return res
         .status(400)
-        .json("You have already been accepted for this job");
+        .json("You have already been accepted for this event");
 
-    job.appliers.push(req.params.userId);
-    await job.save();
+    event.appliers.push(req.params.userId);
+    event.participants++; // Increment participants by 1
+
+    await event.save();
 
     // add notification to tester
-    const tester = await Tester.findById(job.tester).exec();
+    const tester = await Tester.findById(event.tester).exec();
     tester.notificationsCompany.push({
-      message: `Applied for your job of : ${job.title}`,
-      job: job._id,
+      message: `Applied for your event of : ${event.title}`,
+      event: event._id,
       user: user._id,
       userFirstname: user.firstname,
       userLastname: user.lastname,
@@ -159,26 +161,27 @@ const applyJob = async (req, res) => {
 
 const unapplyJob = async (req, res) => {
   try {
-    const job = await Job.findById(req.params.jobId).exec();
-    if (!job) return res.status(400).json("Job not found");
+    const event = await Event.findById(req.params.jobId).exec();
+    if (!event) return res.status(400).json("Event not found");
 
     // Check if user has applied
-    const applierIndex = job.appliers.indexOf(req.params.userId);
+    const applierIndex = event.appliers.indexOf(req.params.userId);
     if (applierIndex === -1)
-      return res.status(400).json("You have not applied for this job");
+      return res.status(400).json("You have not applied for this event");
 
     // Remove user from appliers array
-    job.appliers.splice(applierIndex, 1);
+    event.appliers.splice(applierIndex, 1);
+    event.participants--; // Decrement participants by 1
 
     // Remove user from acceptedAppliers array if they were accepted
-    const acceptedApplierIndex = job.acceptedAppliers.indexOf(
+    const acceptedApplierIndex = event.acceptedAppliers.indexOf(
       req.params.userId
     );
     if (acceptedApplierIndex !== -1) {
-      job.acceptedAppliers.splice(acceptedApplierIndex, 1);
+      event.acceptedAppliers.splice(acceptedApplierIndex, 1);
     }
 
-    await job.save();
+    await event.save();
     return res.status(200).json("Unapplied successfully");
   } catch (err) {
     return res.status(500).json({ error: err.message });
@@ -187,13 +190,14 @@ const unapplyJob = async (req, res) => {
 
 const getAppliers = async (req, res) => {
   try {
-    const job = await Job.findById(req.params.jobId)
+    const event = await Event.findById(req.params.jobId)
       .populate({ path: "appliers", select: "firstname lastname email" })
       .select({ appliers: 1 })
       .lean()
       .exec();
-    if (job.appliers.length === 0) return res.status(204).json(job.appliers);
-    return res.status(200).json(job.appliers);
+    if (event.appliers.length === 0)
+      return res.status(204).json(event.appliers);
+    return res.status(200).json(event.appliers);
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
@@ -201,9 +205,10 @@ const getAppliers = async (req, res) => {
 
 const getSortedAppliers = async (req, res) => {
   try {
-    const job = await Job.findById(req.params.jobId).populate("appliers");
-    if (job.appliers.length === 0) return res.status(204).json(job.appliers);
-    const sortedappliers = await sortappliers(job.appliers);
+    const event = await Event.findById(req.params.jobId).populate("appliers");
+    if (event.appliers.length === 0)
+      return res.status(204).json(event.appliers);
+    const sortedappliers = await sortappliers(event.appliers);
     return res.status(200).json(sortedappliers);
   } catch (err) {
     return res.status(500).json({ error: err.message });
@@ -214,35 +219,35 @@ const acceptApplier = async (req, res) => {
   const { jobId, userId } = req.params;
 
   try {
-    // Find the job and the user
-    const job = await Job.findById(jobId);
+    // Find the event and the user
+    const event = await Event.findById(jobId);
     const user = await User.findById(userId);
 
-    // Check if the job and user exist
-    if (!job || !user) {
-      return res.status(404).json({ message: "Job or user not found" });
+    // Check if the event and user exist
+    if (!event || !user) {
+      return res.status(404).json({ message: "Event or user not found" });
     }
 
-    // Check if the user has applied to the job
-    if (!job.appliers.includes(user._id)) {
+    // Check if the user has applied to the event
+    if (!event.appliers.includes(user._id)) {
       return res
         .status(400)
-        .json({ message: "User has not applied to this job" });
+        .json({ message: "User has not applied to this event" });
     }
 
-    // Add the user to the acceptedAppliers array of the job
-    job.acceptedAppliers.push(user._id);
+    // Add the user to the acceptedAppliers array of the event
+    event.acceptedAppliers.push(user._id);
     user.notifications.push({
-      message: "You have been accepted for The Job: ",
-      job: job._id,
+      message: "You have been accepted for The Event: ",
+      event: event._id,
     });
-    sendEmail(user.email, "You have been accepted for a Job: ");
+    sendEmail(user.email, "You have been accepted for a Event: ");
     await user.save();
-    await job.save();
+    await event.save();
 
     return res
       .status(200)
-      .json({ message: "User has been accepted for this job" });
+      .json({ message: "User has been accepted for this event" });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Server error" });
@@ -250,10 +255,10 @@ const acceptApplier = async (req, res) => {
 };
 const getAcceptedAppliers = async (req, res) => {
   try {
-    const job = await Job.findById(req.params.jobId).exec();
-    if (!job) return res.status(400).json("Job not found");
+    const event = await Event.findById(req.params.jobId).exec();
+    if (!event) return res.status(400).json("Event not found");
 
-    const acceptedAppliers = job.acceptedAppliers;
+    const acceptedAppliers = event.acceptedAppliers;
 
     // create notifications for accepted users
     for (const userId of acceptedAppliers) {
