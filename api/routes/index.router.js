@@ -13,6 +13,7 @@ const jobRouter = require("./event.router");
 const conversationRouter = require("./conversation.router");
 const MessageRouter = require("./messages.router");
 const stripeRouter = require("./stripe.router");
+const recommendationRoutes = require("./recommendationRoutes");
 
 const CategoryRouter = require("./Category.router");
 const CommentRouter = require("./comment.router");
@@ -31,6 +32,8 @@ router.use("/challenge", ChallengeRouter);
 router.use("/conversation", conversationRouter);
 router.use("/messages", MessageRouter);
 router.use("/stripe", stripeRouter);
+// recommendations
+router.use("/recommend", recommendationRoutes);
 
 router.use("/category", CategoryRouter);
 router.use("/comment", CommentRouter);

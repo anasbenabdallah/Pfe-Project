@@ -85,7 +85,7 @@ const Participants = ({ handleClose, jobId, open }) => {
     <Dialog open={open} onClose={handleClose} fullWidth="lg">
       <Grid container alignItems="center">
         <Grid item xs={12} sm={6}>
-          <DialogTitle variant="h4">Applicants</DialogTitle>
+          <DialogTitle variant="h4">Participants</DialogTitle>
         </Grid>
         <Grid item xs={12} sm={6} container justifyContent="flex-end">
           <Grid item style={{ paddingRight: 20 }}>

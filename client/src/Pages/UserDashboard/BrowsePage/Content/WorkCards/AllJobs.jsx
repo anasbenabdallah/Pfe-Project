@@ -121,7 +121,7 @@ const AllJobs = () => {
           />
         ))
       ) : (
-        <p>No jobs found.</p>
+        <p>No events found.</p>
       )}
       {filteredJobs.length > JOBS_PER_PAGE && (
         <Pagination

@@ -25,7 +25,7 @@ import {
   getFeedPosts,
 } from "../../../../../redux/actions/SocialPostAction";
 import PostMenuIcon from "./components/PostMenuIcon";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import CommentButton from "../../../../../Components/shared/comments/CommentButton";
 import ReactPlayer from "react-player";
@@ -34,7 +34,7 @@ import screenfull from "screenfull";
 const useStyles = makeStyles({
   button: {
     "&:hover": {
-      backgroundColor: "black", // Change the background color on hover
+      backgroundColor: "black",
     },
   },
   card: {
@@ -56,6 +56,8 @@ const SocialPosts = (props) => {
   const [disabledOptions, setDisabledOptions] = useState({});
   const [alertMessage, setAlertMessage] = useState("");
   const [alertOpen, setAlertOpen] = useState(false);
+  const [recommendedPosts, setRecommendedPosts] = useState([]);
+  const [predictions, setPredictions] = useState([]);
 
   useEffect(() => {
     dispatch(getFeedPosts()).catch(() => console.log("Error loading posts"));
@@ -93,7 +95,6 @@ const SocialPosts = (props) => {
 
   const voteForPollOption = async (postId, optionId) => {
     try {
-      // Send a request to vote for the option
       const response = await axios.post(
         `http://localhost:8000/post/${postId}/poll/${optionId}/vote`,
         {},
@@ -102,10 +103,8 @@ const SocialPosts = (props) => {
         }
       );
 
-      // Update the local state or refetch the posts to reflect the new vote count
       dispatch(getFeedPosts());
 
-      // Disable the buttons for all options in the current post
       setDisabledOptions((prev) => ({
         ...prev,
         [postId]: true,
@@ -150,8 +149,28 @@ const SocialPosts = (props) => {
     setAlertOpen(false);
   };
 
+  const fetchRecommendedPosts = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/recommend/5eece14efc13ae6609000000/recommendations`
+      );
+      console.log(response.data.recommendedPosts);
+      setRecommendedPosts(response.data.recommendedPosts);
+      setPredictions(response.data.predictions);
+    } catch (error) {
+      console.error("Error fetching recommended posts:", error);
+    }
+  };
+
   return (
     <div>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={fetchRecommendedPosts}
+      >
+        Recommend Posts
+      </Button>
       <Stack spacing={2}>
         {isLoading ? (
           <Typography>Loading posts...</Typography>
@@ -208,7 +227,7 @@ const SocialPosts = (props) => {
                       <Button
                         onClick={() => voteForPollOption(post._id, option._id)}
                         disabled={disabledOptions[post._id]}
-                        className={classes.button} // Apply the custom styles class
+                        className={classes.button}
                       >
                         <Typography>{option.text}</Typography>
                       </Button>
@@ -265,12 +284,130 @@ const SocialPosts = (props) => {
             </Card>
           ))
         ) : null}
+        {recommendedPosts.length > 0 && (
+          <div>
+            <Typography variant="h5">Recommended Posts</Typography>
+            {recommendedPosts.map((postId) => {
+              const post = posts.find((p) => p._id === postId);
+              return post ? (
+                <Card
+                  key={post._id}
+                  elevation={0}
+                  variant="outlined"
+                  className={classes.card}
+                >
+                  <CardHeader
+                    action={<PostMenuIcon postId={post._id} />}
+                    title={
+                      <div>
+                        <Link
+                          to={`/profile/${post.userId}`}
+                          key={post.userId}
+                          style={{ textDecoration: "none" }}
+                        >
+                          <Typography variant="h6">
+                            {post.firstname} {post.lastname}
+                            {post.companyName && (
+                              <Typography> {post.companyName}</Typography>
+                            )}
+                          </Typography>
+                        </Link>
+                      </div>
+                    }
+                    avatar={<Avatar src={post.userPicturePath} />}
+                  />
+                  <Stack p={"0.5rem 1rem"}>
+                    <Typography> {post.description}</Typography>
+                  </Stack>
+                  {post.postPicturePath && (
+                    <CardActionArea>
+                      <CardMedia component="img" image={post.postPicturePath} />
+                    </CardActionArea>
+                  )}
+                  {post.poll && post.poll.options.length > 0 && (
+                    <Stack p={"0.5rem 1rem"}>
+                      <Typography variant="h6">{post.poll.question}</Typography>
+                      {post.poll.options.map((option) => (
+                        <Stack
+                          key={option._id}
+                          direction="row"
+                          justifyContent="space-between"
+                          alignItems="center"
+                          p={1}
+                          bgcolor="grey.200"
+                          borderRadius={1}
+                          mb={1}
+                        >
+                          <Button
+                            onClick={() =>
+                              voteForPollOption(post._id, option._id)
+                            }
+                            disabled={disabledOptions[post._id]}
+                            className={classes.button}
+                          >
+                            <Typography>{option.text}</Typography>
+                          </Button>
+                          <Typography>{option.votesCount} votes</Typography>
+                          <Typography>
+                            {(
+                              (option.votesCount /
+                                post.poll.options.reduce(
+                                  (total, option) => total + option.votesCount,
+                                  0
+                                )) *
+                              100
+                            ).toFixed(2)}
+                            %
+                          </Typography>
+                        </Stack>
+                      ))}
+                    </Stack>
+                  )}
+                  <CardActions>
+                    <Stack flexDirection={"row"} alignItems={"center"}>
+                      <IconButton
+                        aria-label="add to favorites"
+                        onClick={() => handleLike(post._id)}
+                      >
+                        <Checkbox
+                          icon={<FavoriteBorder />}
+                          checkedIcon={<Favorite sx={{ color: "red" }} />}
+                          checked={post.likes[loggedInUserId]}
+                        />
+                      </IconButton>
+                      <Typography variant="h6">{post.likesCount}</Typography>
+                    </Stack>
+                    <Stack flexDirection={"row"} alignItems={"center"}>
+                      <CommentButton postId={post._id} />
+                      <Typography variant="h6">{post.commentCount}</Typography>
+                    </Stack>
+                    <Stack flexDirection={"row"} alignItems={"center"}>
+                      <IconButton
+                        aria-label="share"
+                        onClick={() => sharePost(post._id)}
+                      >
+                        <Share />
+                        <Typography variant="h6">{post.shareCount}</Typography>
+                      </IconButton>
+                      <IconButton
+                        aria-label="add to favorites"
+                        onClick={() => handleAddFavorite(post._id)}
+                      >
+                        <BookmarkIcon sx={{ color: "gold" }} />
+                      </IconButton>
+                    </Stack>
+                  </CardActions>
+                </Card>
+              ) : null;
+            })}
+          </div>
+        )}
       </Stack>
       <Snackbar
         open={alertOpen}
-        autoHideDuration={2000} // fetch alert for 3second then disappear
+        autoHideDuration={2000}
         onClose={handleAlertClose}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }} // this will control the positon of alert on the web page
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
         <Alert
           onClose={handleAlertClose}

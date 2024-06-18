@@ -103,7 +103,9 @@ const AddPostMenuList = () => {
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            <AddIcon style={{ color: "orange" }} />
+            {myData.role === "tester" && (
+              <AddIcon style={{ color: "orange" }} />
+            )}
           </IconButton>
         </Tooltip>
       </Box>
@@ -128,14 +130,6 @@ const AddPostMenuList = () => {
               <WorkIcon fontSize="small" />
             </ListItemIcon>
             Add Event
-          </MenuItem>
-        )}
-        {myData.role === "tester" && (
-          <MenuItem onClick={handleClickOpenModalChallenge}>
-            <ListItemIcon>
-              <LocalFireDepartmentIcon fontSize="small" />
-            </ListItemIcon>
-            Add a challenge
           </MenuItem>
         )}
       </Menu>

@@ -125,9 +125,11 @@ const applyJob = async (req, res) => {
     const user = await User.findById(req.params.userId).exec();
     if (!user) return res.status(400).json("User not found");
 
-    // Check if user has already applied
+    // Check if user has already paritcipated
     if (event.appliers.includes(req.params.userId))
-      return res.status(400).json("You have already applied for this event");
+      return res
+        .status(400)
+        .json("You have already participated to this event");
 
     // Check if user has already been accepted
     if (event.acceptedAppliers.includes(req.params.userId))
@@ -143,7 +145,7 @@ const applyJob = async (req, res) => {
     // add notification to tester
     const tester = await Tester.findById(event.tester).exec();
     tester.notificationsCompany.push({
-      message: `Applied for your event of : ${event.title}`,
+      message: `paritcipated for your event of : ${event.title}`,
       event: event._id,
       user: user._id,
       userFirstname: user.firstname,
@@ -153,7 +155,7 @@ const applyJob = async (req, res) => {
     });
     await tester.save();
 
-    return res.status(200).json("Applied successfully");
+    return res.status(200).json("paritcipated successfully");
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
@@ -164,10 +166,10 @@ const unapplyJob = async (req, res) => {
     const event = await Event.findById(req.params.jobId).exec();
     if (!event) return res.status(400).json("Event not found");
 
-    // Check if user has applied
+    // Check if user has paritcipated
     const applierIndex = event.appliers.indexOf(req.params.userId);
     if (applierIndex === -1)
-      return res.status(400).json("You have not applied for this event");
+      return res.status(400).json("You have not paritcipated for this event");
 
     // Remove user from appliers array
     event.appliers.splice(applierIndex, 1);
@@ -182,7 +184,7 @@ const unapplyJob = async (req, res) => {
     }
 
     await event.save();
-    return res.status(200).json("Unapplied successfully");
+    return res.status(200).json("Unparticipated successfully");
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
@@ -228,11 +230,11 @@ const acceptApplier = async (req, res) => {
       return res.status(404).json({ message: "Event or user not found" });
     }
 
-    // Check if the user has applied to the event
+    // Check if the user has paritcipated to the event
     if (!event.appliers.includes(user._id)) {
       return res
         .status(400)
-        .json({ message: "User has not applied to this event" });
+        .json({ message: "User has not paritcipated to this event" });
     }
 
     // Add the user to the acceptedAppliers array of the event

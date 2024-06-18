@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-
 import { makeStyles } from "@mui/styles";
-
 import {
   Table,
   TableBody,
@@ -16,8 +14,6 @@ import {
 } from "@mui/material";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { Stack } from "@mui/system";
-
-//--------------------------------------------------Redux-----------------------------------------------//
 import { useSelector, useDispatch } from "react-redux";
 import { getAllUsers } from "../../../../../redux/actions/UserAction";
 
@@ -33,24 +29,30 @@ const LeaderbordTable = () => {
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(8);
+  const [sortedUsers, setSortedUsers] = useState([]);
+
   const dispatch = useDispatch();
   const users = useSelector((state) => state.User.searchResults);
-  console.log("mmmm", users);
 
   useEffect(() => {
     dispatch(getAllUsers()).catch(() => console.log("Error loading posts"));
   }, [dispatch]);
+
+  useEffect(() => {
+    if (users && users.length > 0) {
+      const sorted = [...users].sort((a, b) => b.score - a.score);
+      setSortedUsers(sorted);
+    }
+  }, [users]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 8));
+    setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
-  console.log(users);
 
   return (
     <div>
@@ -65,9 +67,9 @@ const LeaderbordTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {users
+            {sortedUsers
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((user) => (
+              .map((user, index) => (
                 <TableRow key={user._id} hover>
                   <TableCell>
                     <Stack
@@ -76,7 +78,9 @@ const LeaderbordTable = () => {
                       columnGap={1}
                     >
                       <EmojiEventsIcon />
-                      <Typography variant="h5">{user.rank}</Typography>
+                      <Typography variant="h5">
+                        {page * rowsPerPage + index + 1}
+                      </Typography>
                     </Stack>
                   </TableCell>
 
@@ -110,9 +114,9 @@ const LeaderbordTable = () => {
           </TableBody>
         </Table>
         <TablePagination
-          rowsPerPageOptions={[10, 25, 100]}
+          rowsPerPageOptions={[8, 10, 25, 100]}
           component="div"
-          count={users.length}
+          count={sortedUsers.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
