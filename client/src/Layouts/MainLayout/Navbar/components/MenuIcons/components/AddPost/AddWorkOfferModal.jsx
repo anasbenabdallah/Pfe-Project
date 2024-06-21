@@ -90,7 +90,7 @@ export const AddWorkOfferModal = ({ open, handleClose }) => {
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
       <Stack spacing={1}>
-        <DialogTitle variant="h5">Create a Event Offer</DialogTitle>
+        <DialogTitle variant="h5">Create an Event</DialogTitle>
         <Divider />
         <DialogContent>
           <Stack spacing={2}>
@@ -144,7 +144,7 @@ export const AddWorkOfferModal = ({ open, handleClose }) => {
                   Cancel
                 </Button>
                 <Button variant="contained" type="submit">
-                  Post a event offer
+                  Post an Event
                 </Button>
               </Stack>
             </form>

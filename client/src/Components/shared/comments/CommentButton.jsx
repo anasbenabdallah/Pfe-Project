@@ -8,14 +8,12 @@ import {
   Button,
   Grid,
   TextField,
-  Box,
-  ListItemAvatar,
+  Divider,
   ListItem,
   Avatar,
   ListItemText,
-  Divider,
-  CardMedia,
   List,
+  ListItemAvatar,
 } from "@mui/material";
 import { formatDistance } from "date-fns";
 import AddCommentOutlinedIcon from "@mui/icons-material/AddCommentOutlined";
@@ -26,11 +24,10 @@ const CommentButton = ({ postId }) => {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [desc, setDesc] = useState("");
-  const [selectedPostId, setSelectedPostId] = useState(null); // new state variable
+  const [selectedPostId, setSelectedPostId] = useState(null);
 
   const handleButtonClick = (postId) => {
-    console.log(postId, "xxx"); // Add this line to log the value of postId
-    setSelectedPostId(postId); // update selectedPostId
+    setSelectedPostId(postId);
     setIsOpen(true);
   };
 
@@ -42,26 +39,22 @@ const CommentButton = ({ postId }) => {
     (state) => state.Comment.comments[selectedPostId]
   );
 
-  console.log(comments, "hedha post id comment");
-
   useEffect(() => {
     if (selectedPostId !== null) {
-      // fetch comments only if selectedPostId is not null
       dispatch(getComments(selectedPostId));
     }
   }, [dispatch, selectedPostId]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(desc, "desc"); // Add this line to check the value of the desc variable
-
     try {
       dispatch(
         addComment({
-          postId,
+          postId: selectedPostId,
           desc,
         })
       );
+      setDesc("");
     } catch (error) {
       console.log(error);
     }
@@ -89,7 +82,6 @@ const CommentButton = ({ postId }) => {
                   variant="outlined"
                   value={desc}
                   onChange={(event) => {
-                    console.log(event.target.value);
                     setDesc(event.target.value);
                   }}
                 />
@@ -103,39 +95,47 @@ const CommentButton = ({ postId }) => {
               {comments && comments.length > 0 ? (
                 <List>
                   {comments.map((comment) => (
-                    <>
-                      <ListItem alignItems="flex-start" key={comment._id}>
-                        {/*<ListItemAvatar>
-                      <Avatar src={comment.user.picturePath} />
-                    </ListItemAvatar>*/}
+                    <div key={comment._id}>
+                      <ListItem alignItems="flex-start">
+                        <ListItemAvatar>
+                          <Avatar src={comment.userId.picturePath} />
+                        </ListItemAvatar>
                         <ListItemText
+                          primary={
+                            <Typography
+                              component="span"
+                              variant="body1"
+                              color="text.primary"
+                            >
+                              {comment.userId.firstname}{" "}
+                              {comment.userId.lastname}
+                            </Typography>
+                          }
                           secondary={
                             <React.Fragment>
-                              <Stack flexDirection={"column"}>
-                                <Typography
-                                  sx={{ display: "inline" }}
-                                  component="span"
-                                  variant="body1"
-                                  color="text.primary"
-                                >
-                                  {comment.desc}
-                                </Typography>
-                                {formatDistance(
-                                  new Date(comment.createdAt),
-                                  new Date(),
-                                  {
-                                    addSuffix: true,
-                                  }
-                                )}
-                              </Stack>
+                              <Typography
+                                sx={{ display: "inline" }}
+                                component="span"
+                                variant="body2"
+                                color="text.primary"
+                              >
+                                {comment.desc}
+                              </Typography>
+                              <br />
+                              {formatDistance(
+                                new Date(comment.createdAt),
+                                new Date(),
+                                {
+                                  addSuffix: true,
+                                }
+                              )}
                             </React.Fragment>
                           }
                         />
                       </ListItem>
                       <Divider />
-                    </>
+                    </div>
                   ))}
-                  <Divider />
                 </List>
               ) : (
                 <Typography variant="body1">No comments yet.</Typography>

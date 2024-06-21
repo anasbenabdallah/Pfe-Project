@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { makeStyles } from "@mui/styles";
-import { Snackbar } from "@mui/material";
+import { Snackbar, Avatar } from "@mui/material";
 import {
   Card,
   CardContent,
@@ -15,6 +15,7 @@ import {
   Button,
   IconButton,
   Container,
+  Box,
 } from "@mui/material";
 import axios from "axios";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -48,9 +49,29 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
+    padding: theme.spacing(2),
   },
   deleteButton: {
     color: theme.palette.error.main,
+  },
+  dialog: {
+    width: "600px", // Adjust width as needed
+    maxWidth: "100%",
+  },
+  commentBox: {
+    backgroundColor: theme.palette.grey[200], // Light grey background
+    padding: theme.spacing(1),
+    borderRadius: theme.shape.borderRadius,
+    marginBottom: theme.spacing(1),
+    display: "flex",
+    alignItems: "center",
+  },
+  avatar: {
+    marginRight: theme.spacing(2),
+  },
+  description: {
+    color: "purple",
+    backgroundColor: "lightpink", // Light pink background color
   },
 }));
 
@@ -93,6 +114,7 @@ const ContestCards = () => {
   const handleChangePage = (event, value) => {
     setPage(value);
   };
+
   const handleSnackbarOpen = () => {
     setSnackbarOpen(true);
   };
@@ -133,6 +155,18 @@ const ContestCards = () => {
     }
   };
 
+  const formatDescription = (description) => {
+    const words = description.split(" ");
+    let formattedDescription = "";
+    for (let i = 0; i < words.length; i++) {
+      formattedDescription += words[i] + " ";
+      if ((i + 1) % 6 === 0) {
+        formattedDescription += "<br />";
+      }
+    }
+    return formattedDescription.trim();
+  };
+
   return (
     <Container maxWidth="md">
       <Stack spacing={2}>
@@ -165,9 +199,13 @@ const ContestCards = () => {
                       {post.firstname} {post.lastname}
                     </Typography>
                     <Stack flexDirection={"row"} columnGap={"0.3rem"}>
-                      <Typography variant="subtitle1" color={"primary"}>
-                        {post.description}
-                      </Typography>
+                      <Typography
+                        variant="subtitle1"
+                        color={"primary"}
+                        dangerouslySetInnerHTML={{
+                          __html: formatDescription(post.description),
+                        }}
+                      ></Typography>
                     </Stack>
                   </Stack>
                 </CardContent>
@@ -196,30 +234,43 @@ const ContestCards = () => {
         shape="rounded"
         className={classes.pagination}
       />
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        classes={{ paper: classes.dialog }}
+      >
         {selectedPost && (
           <>
             <DialogTitle>{selectedPost.title}</DialogTitle>
             <DialogContent>
-              <Typography variant="body1">
+              <Typography
+                variant="body1"
+                gutterBottom
+                className={classes.description}
+              >
                 {selectedPost.description}
               </Typography>
-              <Typography variant="h6">Comments:</Typography>
+              <Typography variant="h6" gutterBottom>
+                Comments:
+              </Typography>
               {selectedPost.comments.map((comment) => (
-                <Typography key={comment._id} variant="body2">
-                  {comment.desc}
-                </Typography>
+                <Box key={comment._id} className={classes.commentBox}>
+                  <Avatar className={classes.avatar}></Avatar>
+                  <Typography variant="body2">{comment.desc}</Typography>
+                </Box>
               ))}
             </DialogContent>
             <DialogActions>
-              <Button onClick={handleCloseDialog}>Close</Button>
+              <Button onClick={handleCloseDialog} color="primary">
+                Close
+              </Button>
             </DialogActions>
           </>
         )}
       </Dialog>
       <Snackbar
         open={snackbarOpen}
-        autoHideDuration={6000}
+        autoHideDuration={600}
         onClose={handleSnackbarClose}
         message="Element deleted successfully"
         anchorOrigin={{ vertical: "top", horizontal: "center" }}

@@ -68,27 +68,19 @@ const ProfilePageContent = () => {
             </Grid>
           </Grid>
         )}
+
         {value === 1 && (
-          <Grid item lg={12} md={12} xs={12} justify="center">
-            <MyChallenges />
-          </Grid>
-        )}
-        {value === 2 && (
           <Grid item lg={12} md={12} xs={12} justify="center">
             <Followers />
           </Grid>
         )}
-        {value === 3 && (
+        {value === 2 && (
           <Grid item lg={12} md={12} xs={12} justify="center">
             <Followings />
           </Grid>
         )}
-        {value === 4 && (
-          <Grid item lg={12} md={12} xs={12} justify="center">
-            <MyJobs />
-          </Grid>
-        )}
-        {value === 5 && (
+
+        {value === 3 && (
           <Grid item lg={12} md={12} xs={12} justify="center">
             <FeedbacksPage />
           </Grid>

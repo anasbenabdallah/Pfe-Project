@@ -11,8 +11,12 @@ const addComment = async (req, res, next) => {
     post.comments.push(savedComment._id);
     post.commentCount += 1; // increment comment count
     await post.save();
+    const populatedComment = await Comment.findById(savedComment._id).populate(
+      "userId",
+      "firstname lastname picturePath"
+    );
 
-    res.status(200).send(savedComment);
+    res.status(200).send(populatedComment);
   } catch (err) {
     next(err);
   }

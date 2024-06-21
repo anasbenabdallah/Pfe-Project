@@ -13,6 +13,11 @@ import {
   Button,
   Snackbar,
   Alert,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  CircularProgress,
 } from "@mui/material";
 import { Favorite, FavoriteBorder, MoreVert, Share } from "@mui/icons-material";
 import AddCommentOutlinedIcon from "@mui/icons-material/AddCommentOutlined";
@@ -58,6 +63,18 @@ const SocialPosts = (props) => {
   const [alertOpen, setAlertOpen] = useState(false);
   const [recommendedPosts, setRecommendedPosts] = useState([]);
   const [predictions, setPredictions] = useState([]);
+  const [recommendDialogOpen, setRecommendDialogOpen] = useState(false);
+  const [loaading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (recommendDialogOpen) {
+      setLoading(true);
+      // Simulate fetching data
+      setTimeout(() => {
+        setLoading(false);
+      }, 500); // Replace with actual data fetching
+    }
+  }, [recommendDialogOpen]);
 
   useEffect(() => {
     dispatch(getFeedPosts()).catch(() => console.log("Error loading posts"));
@@ -152,14 +169,19 @@ const SocialPosts = (props) => {
   const fetchRecommendedPosts = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/recommend/5eece14efc13ae6609000000/recommendations`
+        `http://localhost:8000/recommend/${loggedInUserId}/recommendations`
       );
       console.log(response.data.recommendedPosts);
       setRecommendedPosts(response.data.recommendedPosts);
       setPredictions(response.data.predictions);
+      setRecommendDialogOpen(true);
     } catch (error) {
       console.error("Error fetching recommended posts:", error);
     }
+  };
+
+  const closeRecommendDialog = () => {
+    setRecommendDialogOpen(false);
   };
 
   return (
@@ -184,6 +206,13 @@ const SocialPosts = (props) => {
             >
               <CardHeader
                 action={<PostMenuIcon postId={post._id} />}
+                subheader={
+                  <Typography variant="h6" color={"gray"}>
+                    {formatDistance(new Date(post.createdAt), new Date(), {
+                      addSuffix: true,
+                    })}
+                  </Typography>
+                }
                 title={
                   <div>
                     <Link
@@ -284,125 +313,154 @@ const SocialPosts = (props) => {
             </Card>
           ))
         ) : null}
-        {recommendedPosts.length > 0 && (
-          <div>
-            <Typography variant="h5">Recommended Posts</Typography>
-            {recommendedPosts.map((postId) => {
-              const post = posts.find((p) => p._id === postId);
-              return post ? (
-                <Card
-                  key={post._id}
-                  elevation={0}
-                  variant="outlined"
-                  className={classes.card}
-                >
-                  <CardHeader
-                    action={<PostMenuIcon postId={post._id} />}
-                    title={
-                      <div>
-                        <Link
-                          to={`/profile/${post.userId}`}
-                          key={post.userId}
-                          style={{ textDecoration: "none" }}
-                        >
-                          <Typography variant="h6">
-                            {post.firstname} {post.lastname}
-                            {post.companyName && (
-                              <Typography> {post.companyName}</Typography>
-                            )}
-                          </Typography>
-                        </Link>
-                      </div>
-                    }
-                    avatar={<Avatar src={post.userPicturePath} />}
-                  />
-                  <Stack p={"0.5rem 1rem"}>
-                    <Typography> {post.description}</Typography>
-                  </Stack>
-                  {post.postPicturePath && (
-                    <CardActionArea>
-                      <CardMedia component="img" image={post.postPicturePath} />
-                    </CardActionArea>
-                  )}
-                  {post.poll && post.poll.options.length > 0 && (
-                    <Stack p={"0.5rem 1rem"}>
-                      <Typography variant="h6">{post.poll.question}</Typography>
-                      {post.poll.options.map((option) => (
-                        <Stack
-                          key={option._id}
-                          direction="row"
-                          justifyContent="space-between"
-                          alignItems="center"
-                          p={1}
-                          bgcolor="grey.200"
-                          borderRadius={1}
-                          mb={1}
-                        >
-                          <Button
-                            onClick={() =>
-                              voteForPollOption(post._id, option._id)
-                            }
-                            disabled={disabledOptions[post._id]}
-                            className={classes.button}
-                          >
-                            <Typography>{option.text}</Typography>
-                          </Button>
-                          <Typography>{option.votesCount} votes</Typography>
-                          <Typography>
-                            {(
-                              (option.votesCount /
-                                post.poll.options.reduce(
-                                  (total, option) => total + option.votesCount,
-                                  0
-                                )) *
-                              100
-                            ).toFixed(2)}
-                            %
-                          </Typography>
-                        </Stack>
-                      ))}
-                    </Stack>
-                  )}
-                  <CardActions>
-                    <Stack flexDirection={"row"} alignItems={"center"}>
-                      <IconButton
-                        aria-label="add to favorites"
-                        onClick={() => handleLike(post._id)}
-                      >
-                        <Checkbox
-                          icon={<FavoriteBorder />}
-                          checkedIcon={<Favorite sx={{ color: "red" }} />}
-                          checked={post.likes[loggedInUserId]}
-                        />
-                      </IconButton>
-                      <Typography variant="h6">{post.likesCount}</Typography>
-                    </Stack>
-                    <Stack flexDirection={"row"} alignItems={"center"}>
-                      <CommentButton postId={post._id} />
-                      <Typography variant="h6">{post.commentCount}</Typography>
-                    </Stack>
-                    <Stack flexDirection={"row"} alignItems={"center"}>
-                      <IconButton
-                        aria-label="share"
-                        onClick={() => sharePost(post._id)}
-                      >
-                        <Share />
-                        <Typography variant="h6">{post.shareCount}</Typography>
-                      </IconButton>
-                      <IconButton
-                        aria-label="add to favorites"
-                        onClick={() => handleAddFavorite(post._id)}
-                      >
-                        <BookmarkIcon sx={{ color: "gold" }} />
-                      </IconButton>
-                    </Stack>
-                  </CardActions>
-                </Card>
-              ) : null;
-            })}
-          </div>
-        )}
       </Stack>
+
+      <Dialog
+        open={recommendDialogOpen}
+        onClose={closeRecommendDialog}
+        maxWidth="lg"
+        fullWidth
+        PaperProps={{
+          sx: {
+            width: "80%",
+            maxWidth: "none",
+          },
+        }}
+      >
+        <DialogTitle>Recommended Posts</DialogTitle>
+        <DialogContent>
+          {loaading ? (
+            <Stack
+              alignItems="center"
+              justifyContent="center"
+              sx={{ height: "100%" }}
+            >
+              <CircularProgress />
+            </Stack>
+          ) : (
+            <Stack spacing={2}>
+              {recommendedPosts.length > 0 ? (
+                recommendedPosts.map((post) => (
+                  <Card key={post._id} elevation={0} variant="outlined">
+                    <CardHeader
+                      action={<PostMenuIcon postId={post._id} />}
+                      title={
+                        <div>
+                          <Link
+                            to={`/profile/${post.userId}`}
+                            key={post.userId}
+                            style={{ textDecoration: "none" }}
+                          >
+                            <Typography variant="h6">
+                              {post.firstname} {post.lastname}
+                              {post.companyName && (
+                                <Typography> {post.companyName}</Typography>
+                              )}
+                            </Typography>
+                          </Link>
+                        </div>
+                      }
+                      avatar={<Avatar src={post.userPicturePath} />}
+                    />
+                    <Stack p={"0.5rem 1rem"}>
+                      <Typography> {post.description}</Typography>
+                    </Stack>
+                    {post.postPicturePath && (
+                      <CardActionArea>
+                        <CardMedia
+                          component="img"
+                          image={post.postPicturePath}
+                        />
+                      </CardActionArea>
+                    )}
+                    {post.poll && post.poll.options.length > 0 && (
+                      <Stack p={"0.5rem 1rem"}>
+                        <Typography variant="h6">
+                          {post.poll.question}
+                        </Typography>
+                        {post.poll.options.map((option) => (
+                          <Stack
+                            key={option._id}
+                            direction="row"
+                            justifyContent="space-between"
+                            alignItems="center"
+                            p={1}
+                            bgcolor="grey.200"
+                            borderRadius={1}
+                            mb={1}
+                          >
+                            <Button
+                              onClick={() =>
+                                voteForPollOption(post._id, option._id)
+                              }
+                              disabled={disabledOptions[post._id]}
+                            >
+                              <Typography>{option.text}</Typography>
+                            </Button>
+                            <Typography>{option.votesCount} votes</Typography>
+                            <Typography>
+                              {(
+                                (option.votesCount /
+                                  post.poll.options.reduce(
+                                    (total, option) =>
+                                      total + option.votesCount,
+                                    0
+                                  )) *
+                                100
+                              ).toFixed(2)}
+                              %
+                            </Typography>
+                          </Stack>
+                        ))}
+                      </Stack>
+                    )}
+                    <CardActions>
+                      <Stack flexDirection={"row"} alignItems={"center"}>
+                        <IconButton
+                          aria-label="add to favorites"
+                          onClick={() => handleLike(post._id)}
+                        ></IconButton>
+                        <Typography variant="h6">{post.likesCount}</Typography>
+                      </Stack>
+                      <Stack flexDirection={"row"} alignItems={"center"}>
+                        <CommentButton postId={post._id} />
+                        <Typography variant="h6">
+                          {post.commentCount}
+                        </Typography>
+                      </Stack>
+                      <Stack flexDirection={"row"} alignItems={"center"}>
+                        <IconButton
+                          aria-label="share"
+                          onClick={() => sharePost(post._id)}
+                        >
+                          <Share />
+                          <Typography variant="h6">
+                            {post.shareCount}
+                          </Typography>
+                        </IconButton>
+                        <IconButton
+                          aria-label="add to favorites"
+                          onClick={() => handleAddFavorite(post._id)}
+                        >
+                          <BookmarkIcon sx={{ color: "gold" }} />
+                        </IconButton>
+                      </Stack>
+                    </CardActions>
+                  </Card>
+                ))
+              ) : (
+                <Typography>No recommendations available</Typography>
+              )}
+            </Stack>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeRecommendDialog} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <Snackbar
         open={alertOpen}
         autoHideDuration={2000}

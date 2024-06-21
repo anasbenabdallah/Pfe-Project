@@ -88,9 +88,7 @@ const Participants = ({ handleClose, jobId, open }) => {
           <DialogTitle variant="h4">Participants</DialogTitle>
         </Grid>
         <Grid item xs={12} sm={6} container justifyContent="flex-end">
-          <Grid item style={{ paddingRight: 20 }}>
-            <Button onClick={handleClick}>AI SORT</Button>
-          </Grid>
+          <Grid item style={{ paddingRight: 20 }}></Grid>
         </Grid>
       </Grid>{" "}
       <DialogContent>
@@ -131,7 +129,7 @@ const Participants = ({ handleClose, jobId, open }) => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={3}>No appliers yet</TableCell>
+                  <TableCell colSpan={3}>No Pariticpants yet</TableCell>
                 </TableRow>
               )}
             </TableBody>

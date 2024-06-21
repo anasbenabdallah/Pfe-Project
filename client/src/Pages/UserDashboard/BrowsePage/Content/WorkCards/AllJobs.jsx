@@ -38,9 +38,7 @@ const AllJobs = () => {
     const user = JSON.parse(localStorage.getItem("user"));
     setUserId(user._id);
     sendRequest()
-      .then((data) =>
-        setJobs(data.jobs.filter((event) => event.tester._id !== user._id))
-      )
+      .then((data) => setJobs(data.jobs))
       .finally(() => setIsLoading(false));
   }, []);
 

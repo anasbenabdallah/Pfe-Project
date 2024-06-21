@@ -49,12 +49,11 @@ const CompletedChallenges = () => {
   console.log("mychallngesyajhon", myChallenges);
   return (
     <div>
-      <Stack flexDirection={"row"} columnGap={1} alignItems={"flex-end"}>
-        <Typography variant="h5">{myChallenges.length}</Typography>
-        <Typography variant="h6" color={"gray"}>
-          Completed challenges
-        </Typography>
-      </Stack>
+      <Stack
+        flexDirection={"row"}
+        columnGap={1}
+        alignItems={"flex-end"}
+      ></Stack>
     </div>
   );
 };

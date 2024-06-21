@@ -55,9 +55,6 @@ const CompletedChallenges = () => {
         alignItems={"flex-end"}
         justifyContent={"space-between"}
       >
-        <Typography variant="h6" color={"gray"}>
-          Completed challenges
-        </Typography>
         <Typography variant="h5">{myChallenges.length}</Typography>
       </Stack>
     </div>

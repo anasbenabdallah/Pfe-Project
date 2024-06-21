@@ -58,28 +58,7 @@ export default function Privacy() {
         <Typography variant="h5" gutterBottom>
           Privacy Informations
         </Typography>
-        <Divider />
-        {myData.role == "user" && (
-          <Grid item xs={4}>
-            <div
-              style={{
-                position: "relative",
-                display: "flex",
-              }}
-            >
-              <FaceRecognition mode="add" />
-              <p
-                style={{
-                  backgroundColor: isFaceRecognition === true ? "green" : "red",
-                  color: "white",
-                  padding: "5px",
-                }}
-              >
-                {isFaceRecognition ? "Enabled" : "Disabled"}
-              </p>
-            </div>
-          </Grid>
-        )}
+
         <Divider />
         <br />
         <Typography variant="h5" gutterBottom>
