@@ -53,7 +53,7 @@ const AddReviewModal = ({ open, onClose }) => {
     event.preventDefault();
     try {
       console.log("Submitting review with data:", {
-        companyId: userId,
+        testerId: userId,
         description: review.description,
         star: review.star,
       });
@@ -61,7 +61,7 @@ const AddReviewModal = ({ open, onClose }) => {
       await axios.post(
         `http://localhost:8000/review/create/${trusuerid}`,
         {
-          companyId: userId,
+          testerId: userId,
           description: review.description,
           star: review.star,
         },

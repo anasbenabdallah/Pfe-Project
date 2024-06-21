@@ -160,7 +160,7 @@ const ProfileMenu = () => {
                 </Typography>
               </div>
             ) : (
-              <Typography variant="h5">{myData.companyName}</Typography>
+              <Typography variant="h5">{myData.testerName}</Typography>
             )}
           </Stack>
         </MenuItem>

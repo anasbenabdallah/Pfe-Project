@@ -5,7 +5,7 @@ const init = {
 };
 
 export const selectUsers = (state) => state.Admin.users;
-export const selectCompanies = (state) => state.Admin.testers;
+export const selectTesters = (state) => state.Admin.testers;
 
 const AdminReducer = (state = init, action) => {
   switch (action.type) {
@@ -15,15 +15,15 @@ const AdminReducer = (state = init, action) => {
         users: [...state.users, action.payload],
         error: null,
       };
-    case "approve_company_success":
-      const updateCompanies = state.testers.map((tester) =>
+    case "approve_tester_success":
+      const updateTesters = state.testers.map((tester) =>
         tester._id === action.payload._id
           ? { ...tester, verified: true }
           : tester
       );
       return {
         ...state,
-        testers: updateCompanies,
+        testers: updateTesters,
         error: null,
       };
 
@@ -61,15 +61,15 @@ const AdminReducer = (state = init, action) => {
         ...state,
         error: action.payload,
       };
-    case "get_companies_success":
+    case "get_testers_success":
       return {
         ...state,
         testers: action.payload,
         error: null,
       };
 
-    case "get_companies_error":
-    case "approve_company_error":
+    case "get_testers_error":
+    case "approve_tester_error":
       return {
         ...state,
         error: action.payload,

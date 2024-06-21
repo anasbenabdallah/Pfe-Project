@@ -1,22 +1,19 @@
 //used to validate user input
 const yup = require("yup");
 
-const companyRegisterValidator = yup.object().shape({
-  companyName: yup.string().required("companyName is required"),
+const testerRegisterValidator = yup.object().shape({
+  testerName: yup.string().required("testerName is required"),
   password: yup
     .string()
     .required()
     .max(1024)
     .min(6, "Password must be at least 6 characters long"),
-  email: yup
-    .string()
-    .email("Email must be a valid email address")
-    .required(),
+  email: yup.string().email("Email must be a valid email address").required(),
   role: yup.string().required("role is required"),
 });
 
-const companyEditProfileValidator = yup.object().shape({
-  companyName: yup
+const testerEditProfileValidator = yup.object().shape({
+  testerName: yup
     .string()
     .matches(/^[a-zA-Z]+$/, "First name must only contain letters"),
   password: yup
@@ -39,6 +36,6 @@ const companyEditProfileValidator = yup.object().shape({
 });
 
 module.exports = {
-  companyRegisterValidator,
-  companyEditProfileValidator,
+  testerRegisterValidator,
+  testerEditProfileValidator,
 };

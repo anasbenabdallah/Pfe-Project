@@ -1,6 +1,6 @@
 const init = {
   challenges: [],
-  companyChallenges: [],
+  testerChallenges: [],
   userChallenges: [],
   challengeUsers: [],
   success: false,
@@ -8,8 +8,8 @@ const init = {
 };
 
 export const selectChallenges = (state) => state.Challenge.challenges;
-export const selectCompanyChallenges = (state) =>
-  state.Challenge.companyChallenges;
+export const selectTesterChallenges = (state) =>
+  state.Challenge.testerChallenges;
 export const selectUserChallenges = (state) => state.Challenge.userChallenges;
 
 export const selectChallengeUsers = (state) => state.Challenge.challengeUsers;
@@ -26,20 +26,20 @@ const ChallengesReducer = (state = init, action) => {
         error: null,
       };
     case "delete_challenge_success":
-      const updatedUserChallenges = state.companyChallenges.filter(
+      const updatedUserChallenges = state.testerChallenges.filter(
         (challenge) => challenge._id !== action.payload.challenge._id
       );
       return {
         ...state,
-        companyChallenges: updatedUserChallenges,
+        testerChallenges: updatedUserChallenges,
         success: false,
         error: null,
       };
-    case "get_company_challenges_success":
+    case "get_tester_challenges_success":
       console.log(action.payload);
       return {
         ...state,
-        companyChallenges: action.payload,
+        testerChallenges: action.payload,
         error: null,
       };
     case "get_user_challenges_success":
@@ -106,7 +106,7 @@ const ChallengesReducer = (state = init, action) => {
       }
     case "get_challenges_error":
     case "add_challenge_error":
-    case " get_company_challenges_error":
+    case " get_tester_challenges_error":
     case " join_challenge_error":
     case " unjoin_challenge_error":
     case " submit_challenge_error":

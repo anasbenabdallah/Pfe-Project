@@ -21,13 +21,13 @@ export const AddChallengeModal = ({ open, handleClose }) => {
   const [deadline, setDeadline] = useState("");
   const [openn, setOpenn] = useState(false); // dialog state
 
-  const companyId = JSON.parse(localStorage.getItem("user"))._id;
+  const testerId = JSON.parse(localStorage.getItem("user"))._id;
   const dispatch = useDispatch();
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // prevent default form submission behavior
     const data = await dispatch(
-      addChallenge({ companyId, title, description, category, price })
+      addChallenge({ testerId, title, description, category, price })
     );
 
     handleClose(); // close the dialog after form submission

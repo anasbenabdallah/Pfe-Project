@@ -166,11 +166,12 @@ const Conversation = ({ conversationId, socket, otherUser }) => {
           </Grid>
           <Grid item xs={1} align="right">
             <Fab
-              color="primary"
+              color="dark"
               aria-label="add"
               size="small"
               onClick={handleCreateMessage}
               type="submit"
+              style={{ transform: "translateX(-110px)" }} // Adjust the value as needed
             >
               <SendIcon />
             </Fab>

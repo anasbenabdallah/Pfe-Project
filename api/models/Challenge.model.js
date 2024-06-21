@@ -4,7 +4,7 @@ const Tester = require("./tester.model");
 const ChallengeSchema = new mongoose.Schema(
   {
     //we need the owner of the challenge
-    companyId: {
+    testerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: Tester,
       required: true,

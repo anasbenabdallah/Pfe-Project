@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import BrowseNavigationTab from "./BrowseNavigationTabs/BrowseNavigationTab";
 
 import ContestCards from "./ContestCards/ContestCards";
-import AllJobs from "./WorkCards/AllJobs";
+import AllEvents from "./WorkCards/AllEvents";
 import ContestsFilters from "./ContestCards/ContestFilters";
 
 function TabPanel(props) {
@@ -60,7 +60,7 @@ const BrowseContentPage = () => {
         {value === 1 && (
           <Grid container>
             <Grid item lg={12} md={12} sm={12} xs={12}>
-              <AllJobs />
+              <AllEvents />
             </Grid>
           </Grid>
         )}

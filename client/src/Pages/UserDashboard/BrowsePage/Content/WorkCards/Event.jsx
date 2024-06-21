@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useStyles } from "./util";
-import JobPopup from "./JobPopup";
+import EventPopup from "./EventPopup";
 import ModeEditOutlineIcon from "@mui/icons-material/ModeEditOutline";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import {
@@ -44,7 +44,7 @@ const Event = ({
     setOpen(false);
   };
   const handleEdit = () => {
-    navigate(`/browse/MyJobs/${id}`);
+    navigate(`/browse/MyEvents/${id}`);
   };
 
   const deleteRequest = async () => {
@@ -175,17 +175,17 @@ const Event = ({
       )}
 
       {myData.role === "user" && (
-        <JobPopup
+        <EventPopup
           open={open}
           handleClose={handleClose}
           title={title}
           description={description}
-          jobId={id}
+          eventId={id}
           userId={userId} // pass down userId prop
         />
       )}
       {myData.role === "tester" && (
-        <Participants jobId={id} open={open} handleClose={handleClose} />
+        <Participants eventId={id} open={open} handleClose={handleClose} />
       )}
     </div>
   );

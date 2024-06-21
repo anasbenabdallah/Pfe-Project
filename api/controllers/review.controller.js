@@ -3,7 +3,7 @@ const challengeModel = require("../models/Challenge.model");
 const ObjectId = require("mongoose").Types.ObjectId;
 // a user cannot feedbak tester more then once to avoid spaamming
 const createReview = async (req, res) => {
-  const { companyId, description, star } = req.body;
+  const { testerId, description, star } = req.body;
   const { userId } = req.params; // Extract userId from the URL parameters
 
   // Validate the star rating
@@ -15,15 +15,15 @@ const createReview = async (req, res) => {
 
   // Create a new review instance
   const newReview = new reviewModel({
-    companyId,
+    testerId,
     userId,
     description,
     star,
   });
 
   try {
-    // Check if a review already exists for the user and company
-    const existingReview = await reviewModel.findOne({ userId, companyId });
+    // Check if a review already exists for the user and tester
+    const existingReview = await reviewModel.findOne({ userId, testerId });
     if (existingReview) {
       return res
         .status(400)
@@ -94,17 +94,17 @@ const deleteReview = async (req, res) => {
     return res.status(500).json(error);
   }
 };
-const getReviewsByCompanyId = async (req, res) => {
+const getReviewsByTesterId = async (req, res) => {
   try {
     const reviews = await reviewModel
       .find({
-        companyId: new ObjectId(req.params.companyId),
+        testerId: new ObjectId(req.params.testerId),
       })
       .populate("userId");
     res.status(200).json(reviews);
   } catch (error) {
     console.error(
-      "Error occurred while retrieving reviews by company ID:",
+      "Error occurred while retrieving reviews by tester ID:",
       error
     );
     return res.status(500).json({ message: "Internal Server Error" });
@@ -149,6 +149,6 @@ module.exports = {
   getReviews,
   deleteReview,
   getAllReviews,
-  getReviewsByCompanyId,
+  getReviewsByTesterId,
   updateReviewEtat,
 };

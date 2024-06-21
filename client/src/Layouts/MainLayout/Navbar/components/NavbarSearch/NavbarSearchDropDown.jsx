@@ -33,7 +33,7 @@ export default function NavbarSearchDropDown() {
       const selectedUser = suggestedusers.find((user) =>
         user.firstname
           ? `${user.firstname} ${user.lastname}` === searchqueryNavigation
-          : user.companyName === searchqueryNavigation
+          : user.testerName === searchqueryNavigation
       );
       if (selectedUser) {
         navigate(
@@ -63,7 +63,7 @@ export default function NavbarSearchDropDown() {
         if (option.firstname && option.lastname) {
           return `${option.firstname} ${option.lastname}`;
         }
-        return option.companyName || "";
+        return option.testerName || "";
       }}
       renderOption={(props, option) => (
         <li {...props}>
@@ -86,7 +86,7 @@ export default function NavbarSearchDropDown() {
                 >
                   {option.firstname && option.lastname
                     ? `${option.firstname} ${option.lastname}`
-                    : option.companyName || ""}
+                    : option.testerName || ""}
                 </Link>
                 {option.role === "tester" && (
                   <Typography variant="body1" color="orange">

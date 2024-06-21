@@ -15,7 +15,7 @@ import { useParams } from "react-router-dom";
 import { makeStyles, styled } from "@mui/styles";
 
 import {
-  getCompanyChallenges,
+  getTesterChallenges,
   getUserSubmitChallenge,
 } from "../../../redux/actions/ChallengeAction";
 import StarIcon from "@mui/icons-material/Star";
@@ -33,7 +33,7 @@ import CardOptions from "../../UserDashboard/MyContentPage/CardOptions";
 import BrowseSearchFilter from "../../UserDashboard/BrowsePage/Content/BrowseSearchFilter/BrowseSearchFilter";
 import { useSelector } from "react-redux";
 import {
-  selectCompanyChallenges,
+  selectTesterChallenges,
   selectUserChallenges,
 } from "../../../redux/reducers/ChallengeReducer";
 
@@ -81,7 +81,7 @@ const ChallengeDialog = ({ open, handleClose, tester }) => {
   const endIndex = page * cardsPerPage;
   console.log(tester);
 
-  const selectChallenges = useSelector(selectCompanyChallenges);
+  const selectChallenges = useSelector(selectTesterChallenges);
 
   useEffect(() => {
     setChallenges(selectChallenges);
@@ -92,7 +92,7 @@ const ChallengeDialog = ({ open, handleClose, tester }) => {
     const fetchData = async () => {
       try {
         console.log(tester);
-        const result = await dispatch(getCompanyChallenges(tester._id));
+        const result = await dispatch(getTesterChallenges(tester._id));
         console.log("resultat", result);
         setData(result);
       } catch (err) {
@@ -155,7 +155,7 @@ const ChallengeDialog = ({ open, handleClose, tester }) => {
                     <CardMedia
                       className={classes.cover}
                       image={tester.picturePath}
-                      title={tester.companyName}
+                      title={tester.testerName}
                       sx={{ display: { xs: "none", sm: "block" } }}
                     />
                     <div className={classes.content}>
@@ -169,7 +169,7 @@ const ChallengeDialog = ({ open, handleClose, tester }) => {
                               textOverflow="ellipsis"
                               whiteSpace={"normal"}
                             >
-                              {tester.companyName}
+                              {tester.testerName}
                             </Typography>
                             <Typography
                               variant="body1"

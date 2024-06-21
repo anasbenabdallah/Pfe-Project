@@ -41,32 +41,31 @@ export const getChallenges =
     }
   };
 
-export const getCompanyChallenges =
-  (companyId) => async (dispatch, getState) => {
-    try {
-      const { data } = await axios.get(
-        ` http://localhost:8000/tester/get/${companyId}`,
-        {
-          withCredentials: true,
-        }
-      );
-      console.log("data:", data);
-      dispatch({
-        type: "get_company_challenges_success",
-        payload: data.challenges,
-      });
+export const getTesterChallenges = (testerId) => async (dispatch, getState) => {
+  try {
+    const { data } = await axios.get(
+      ` http://localhost:8000/tester/get/${testerId}`,
+      {
+        withCredentials: true,
+      }
+    );
+    console.log("data:", data);
+    dispatch({
+      type: "get_tester_challenges_success",
+      payload: data.challenges,
+    });
 
-      return data;
-    } catch (error) {
-      console.log("error:", error);
-      console.log("get challenges error:", error.response.data);
+    return data;
+  } catch (error) {
+    console.log("error:", error);
+    console.log("get challenges error:", error.response.data);
 
-      dispatch({
-        type: "get_company_challenges_error",
-        payload: error.response.data,
-      });
-    }
-  };
+    dispatch({
+      type: "get_tester_challenges_error",
+      payload: error.response.data,
+    });
+  }
+};
 
 export const addChallenge = (challengeData) => async (dispatch, getState) => {
   try {
@@ -337,7 +336,7 @@ export const chooseWinner = (challengeData) => async (dispatch, getState) => {
       payload: data,
     });
 
-    localStorage.setItem("user", JSON.stringify(data.newCompany));
+    localStorage.setItem("user", JSON.stringify(data.newTester));
     return data.newChallenge;
   } catch (error) {
     console.log("error:", error);

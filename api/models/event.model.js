@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 const Tester = require("./tester.model");
 
-const JobSchema = new mongoose.Schema({
-  companyId: {
+const EventSchema = new mongoose.Schema({
+  testerId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Tester",
   },
@@ -31,4 +31,4 @@ const JobSchema = new mongoose.Schema({
   acceptedAppliers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
 });
 
-module.exports = mongoose.model("Event", JobSchema);
+module.exports = mongoose.model("Event", EventSchema);

@@ -17,11 +17,11 @@ import { makeStyles } from "@mui/styles";
 
 import {
   getUserChallenges,
-  getCompanyChallenges,
+  getTesterChallenges,
 } from "../../../../../redux/actions/ChallengeAction";
 import {
   selectUserChallenges,
-  selectCompanyChallenges,
+  selectTesterChallenges,
 } from "../../../../../redux/reducers/ChallengeReducer";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
@@ -59,7 +59,7 @@ const MyContestLists = () => {
 
   useEffect(() => {
     if (myData.role === "tester") {
-      dispatch(getCompanyChallenges(myData._id));
+      dispatch(getTesterChallenges(myData._id));
     } else {
       dispatch(getUserChallenges(myData._id));
     }
@@ -67,10 +67,10 @@ const MyContestLists = () => {
 
   const challenges = useSelector(selectUserChallenges);
   console.log("challenges:", challenges);
-  const companyChallenges = useSelector(selectCompanyChallenges);
+  const testerChallenges = useSelector(selectTesterChallenges);
 
   const updatedChallenges =
-    myData.role === "tester" ? companyChallenges : challenges;
+    myData.role === "tester" ? testerChallenges : challenges;
 
   useEffect(() => {
     setMyChallenges(updatedChallenges);
@@ -121,8 +121,8 @@ const MyContestLists = () => {
                   <Avatar
                     className={classes.Avatar}
                     src={
-                      user.companyId.picturePath
-                        ? user.companyId.picturePath
+                      user.testerId.picturePath
+                        ? user.testerId.picturePath
                         : myData.picturePath
                     }
                   />
@@ -130,8 +130,8 @@ const MyContestLists = () => {
                     <Stack>
                       <Typography variant="h6" fontWeight={"bold"}>
                         {myData.role === "tester"
-                          ? myData.companyName
-                          : user?.companyId.companyName}
+                          ? myData.testerName
+                          : user?.testerId.testerName}
                       </Typography>
                     </Stack>
                     <Typography variant="caption" noWrap color={"primary"}>

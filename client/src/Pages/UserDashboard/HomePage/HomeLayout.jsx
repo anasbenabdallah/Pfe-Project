@@ -11,7 +11,7 @@ import AddSocialPostCard from "../../../Components/shared/CreatePost/AddSocialPo
 import RightSideContent from "./rightSide/RightSideContent";
 import LeftSideContent from "./userCard/LeftSideContent";
 import { userEditProfile } from "../../../redux/actions/userProfileAction";
-import { companyEditProfile } from "../../../redux/actions/companyProfileAction";
+import { testerEditProfile } from "../../../redux/actions/testerProfileAction";
 import { useNavigate } from "react-router-dom";
 // ==============================|| HOMELAYOUT STYLING ||============================== //
 
@@ -62,7 +62,7 @@ const HomeLayout = () => {
       const data = dispatch(userEditProfile({}, myData));
       localStorage.setItem("user", JSON.stringify(data));
     } else if (query.get("success") && myData.role === "tester") {
-      const data = dispatch(companyEditProfile({}, myData));
+      const data = dispatch(testerEditProfile({}, myData));
       localStorage.setItem("user", JSON.stringify(data));
     }
   }, []);

@@ -6,9 +6,9 @@ import {
 } from "@mui/icons-material";
 import AddTaskIcon from "@mui/icons-material/AddTask";
 import { useDispatch } from "react-redux";
-import { approveCompany } from "../../../redux/actions/AdminAction";
+import { approveTester } from "../../../redux/actions/AdminAction";
 
-const CompanyTableMenuItem = ({ companyId }) => {
+const TesterTableMenuItem = ({ testerId }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (event) => {
@@ -21,7 +21,7 @@ const CompanyTableMenuItem = ({ companyId }) => {
 
   const dispatch = useDispatch();
   const handleApprove = () => {
-    dispatch(approveCompany(companyId));
+    dispatch(approveTester(testerId));
     handleClose();
   };
 
@@ -40,4 +40,4 @@ const CompanyTableMenuItem = ({ companyId }) => {
   );
 };
 
-export default CompanyTableMenuItem;
+export default TesterTableMenuItem;

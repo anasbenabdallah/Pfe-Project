@@ -9,7 +9,7 @@ const ReviewSchema = new mongoose.Schema(
       ref: User,
       required: true,
     },
-    companyId: {
+    testerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: Tester,
       required: true,

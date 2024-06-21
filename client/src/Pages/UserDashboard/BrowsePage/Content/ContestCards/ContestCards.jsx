@@ -170,7 +170,7 @@ const ContestCards = () => {
   return (
     <Container maxWidth="md">
       <Stack spacing={2}>
-        {favoritePosts.length > 0 &&
+        {favoritePosts.length > 0 ? (
           favoritePosts.slice(startIndex, endIndex).map((post) => (
             <Card key={post._id} className={classes.root}>
               <CardMedia
@@ -225,15 +225,22 @@ const ContestCards = () => {
                 </IconButton>
               </div>
             </Card>
-          ))}
+          ))
+        ) : (
+          <Typography variant="h1" align="center" color="textSecondary">
+            Pas de contenu ajouté dans les favoris encore.
+          </Typography>
+        )}
       </Stack>
-      <Pagination
-        count={totalPages}
-        page={page}
-        onChange={handleChangePage}
-        shape="rounded"
-        className={classes.pagination}
-      />
+      {favoritePosts.length > 0 && (
+        <Pagination
+          count={totalPages}
+          page={page}
+          onChange={handleChangePage}
+          shape="rounded"
+          className={classes.pagination}
+        />
+      )}
       <Dialog
         open={openDialog}
         onClose={handleCloseDialog}

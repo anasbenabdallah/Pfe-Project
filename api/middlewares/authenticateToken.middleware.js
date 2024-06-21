@@ -9,7 +9,7 @@ const authenticateToken = async (req, res, next) => {
 
     const payload = await jwt.verify(token, process.env.passwordToken);
     req.userId = payload.id;
-    //req.companyId = payload.idCompany;
+    //req.testerId = payload.idTester;
     req.role = payload.role;
     next();
   } catch (err) {

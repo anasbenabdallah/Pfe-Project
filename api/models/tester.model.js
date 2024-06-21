@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 
-const companySchema = new mongoose.Schema(
+const testerSchema = new mongoose.Schema(
   {
-    companyName: {
+    testerName: {
       type: String,
       maxLength: 255,
       trim: true,
@@ -17,7 +17,7 @@ const companySchema = new mongoose.Schema(
     verified: { type: Boolean, default: false },
     description: { type: String },
     role: { type: String, default: "tester" },
-    jobs: [{ type: mongoose.Types.ObjectId, ref: "Event", required: true }],
+    events: [{ type: mongoose.Types.ObjectId, ref: "Event", required: true }],
     balance: { type: Number, default: 0.0 },
     dateoffoundation: { type: Date },
     phoneNumber: {
@@ -56,7 +56,7 @@ const companySchema = new mongoose.Schema(
         ref: "Challenge",
       },
     ],
-    notificationsCompany: [
+    notificationsTester: [
       {
         message: String,
         createdAt: { type: Date, default: Date.now },
@@ -70,6 +70,6 @@ const companySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Tester = mongoose.model("Tester", companySchema);
+const Tester = mongoose.model("Tester", testerSchema);
 
 module.exports = Tester;

@@ -17,11 +17,11 @@ import {
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
-  selectCompanyChallenges,
+  selectTesterChallenges,
   selectUserChallenges,
 } from "../../../../../../redux/reducers/ChallengeReducer";
 import {
-  getCompanyChallenges,
+  getTesterChallenges,
   getUserChallenges,
 } from "../../../../../../redux/actions/ChallengeAction";
 import { useDispatch } from "react-redux";
@@ -68,17 +68,17 @@ const MyChallenges = () => {
 
   useEffect(() => {
     if (myData.role === "tester") {
-      dispatch(getCompanyChallenges(myData._id));
+      dispatch(getTesterChallenges(myData._id));
     } else {
       dispatch(getUserChallenges(myData._id));
     }
   }, [dispatch, myData._id, myData.role]);
 
   const challenges = useSelector(selectUserChallenges);
-  const companyChallenges = useSelector(selectCompanyChallenges);
+  const testerChallenges = useSelector(selectTesterChallenges);
 
   const updatedChallenges =
-    myData.role === "tester" ? companyChallenges : challenges;
+    myData.role === "tester" ? testerChallenges : challenges;
 
   useEffect(() => {
     setMyChallenges(updatedChallenges);
@@ -116,11 +116,11 @@ const MyChallenges = () => {
                   <CardMedia
                     className={classes.cover}
                     image={
-                      card.companyId.picturePath
-                        ? card.companyId.picturePath
+                      card.testerId.picturePath
+                        ? card.testerId.picturePath
                         : myData.picturePath
                     }
-                    title={card.companyId.companyName}
+                    title={card.testerId.testerName}
                     sx={{ display: { xs: "none", sm: "block" } }}
                   />
                   <div className={classes.content}>
@@ -134,7 +134,7 @@ const MyChallenges = () => {
                             textOverflow="ellipsis"
                             whiteSpace={"normal"}
                           >
-                            {card.companyId.companyName}
+                            {card.testerId.testerName}
                           </Typography>
                           <Typography
                             variant="body1"

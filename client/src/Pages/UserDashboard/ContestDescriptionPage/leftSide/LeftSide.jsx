@@ -5,7 +5,7 @@ import { Stack } from "@mui/system";
 import { NavigationTab } from "./Components/NavigationTab";
 
 import MTable from "./Components/ParticipantsTableSection/ParticipantsTable";
-import CompanyCard from "./Components/section1/Client";
+import TesterCard from "./Components/section1/Client";
 import TasksDescription from "./Components/section1/TaskDescription";
 import ChooseWinner from "./Components/Winner/winner";
 
@@ -68,7 +68,7 @@ const LeftSide = () => {
               xs={12}
               sx={{ display: { xs: "none", md: "block", lg: "block" } }}
             >
-              <CompanyCard />
+              <TesterCard />
             </Grid>
           </Grid>
         )}

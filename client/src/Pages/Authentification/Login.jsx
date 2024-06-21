@@ -79,10 +79,6 @@ const Login = () => {
               </div>
               <div className="login-center-buttons">
                 <button type="submit">Log In</button>
-                <button type="button">
-                  {/*<GoogleSvg />*/}
-                  Log In with Google
-                </button>
               </div>
             </form>
           </div>

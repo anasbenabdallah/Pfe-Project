@@ -18,7 +18,7 @@ import { AddSocialPostModal } from "./AddSocialPostModal";
 
 import { useSelector, useDispatch } from "react-redux";
 import { getUserById } from "../../../../src/redux/actions/UserAction";
-import { getCompanyById } from "../../../../src/redux/actions/companyProfileAction";
+import { getTesterById } from "../../../../src/redux/actions/testerProfileAction";
 import { useLocation, useParams } from "react-router-dom";
 
 export const CustomButton = styled(Button)(() => ({

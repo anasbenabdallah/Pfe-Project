@@ -1,6 +1,6 @@
 const User = require("../models/user.model");
 const Tester = require("../models/tester.model");
-const companySchema = require("../models/tester.model");
+const testerSchema = require("../models/tester.model");
 
 const bcrypt = require("bcryptjs");
 
@@ -14,7 +14,7 @@ const getUsers = async (req, res) => {
   }
 };
 
-const getCompanies = async (req, res) => {
+const getTesters = async (req, res) => {
   try {
     const testers = await Tester.find({}).select("-password");
     res.json(testers);
@@ -111,17 +111,17 @@ const BanAccount = async (req, res) => {
   }
 };
 
-const approveCompany = async (req, res) => {
+const approveTester = async (req, res) => {
   try {
-    console.log("zzz  ", req.body.companyId);
-    const updatedCompany = await companySchema.findByIdAndUpdate(
-      req.body.companyId,
+    console.log("zzz  ", req.body.testerId);
+    const updatedTester = await testerSchema.findByIdAndUpdate(
+      req.body.testerId,
       {
         verified: true,
       },
       { new: true }
     );
-    res.status(200).json(updatedCompany);
+    res.status(200).json(updatedTester);
   } catch (error) {
     console.log(error);
     return res.status(500).json(error);
@@ -135,6 +135,6 @@ module.exports = {
   delUser,
   disableUser,
   BanAccount,
-  approveCompany,
-  getCompanies,
+  approveTester,
+  getTesters,
 };

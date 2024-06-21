@@ -1,5 +1,5 @@
 const userSchema = require("../models/user.model");
-const companySchema = require("../models/tester.model");
+const testerSchema = require("../models/tester.model");
 const jwt = require("jsonwebtoken");
 const { pick } = require("lodash");
 const ChallengeModel = require("../models/Challenge.model");
@@ -13,7 +13,7 @@ const editProfile = async (req, res) => {
     console.log("editProfile");
 
     const updateFields = pick(req.body, [
-      "companyName",
+      "testerName",
       "email",
       "password",
       "picturePath",
@@ -27,31 +27,31 @@ const editProfile = async (req, res) => {
       const hashedPass = await bcrypt.hash(updateFields.password, salt);
       updateFields.password = hashedPass;
     }
-    const updatedCompany = await companySchema
+    const updatedTester = await testerSchema
       .findByIdAndUpdate(req.params.id, updateFields, { new: true })
       .select("-password");
 
-    res.status(200).json(updatedCompany);
+    res.status(200).json(updatedTester);
   } catch (error) {
     console.log(error);
     return res.status(500).json(error);
   }
 };
 
-const getCompany = async (req, res) => {
+const getTester = async (req, res) => {
   try {
     const { id } = req.params;
-    const tester = await companySchema.findById(id).populate("challenges");
+    const tester = await testerSchema.findById(id).populate("challenges");
     res.status(200).json(tester);
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
 };
 
-const getCompanyChallenges = async (req, res) => {
+const getTesterChallenges = async (req, res) => {
   try {
-    const idCompany = req.query.idCompany; // Get idChallenge from the query parameter
-    const Tester = await CompanyModel.findById(idCompany).populate({
+    const idTester = req.query.idTester; // Get idChallenge from the query parameter
+    const Tester = await TesterModel.findById(idTester).populate({
       path: "challenges",
       select: "-password",
     });
@@ -63,11 +63,11 @@ const getCompanyChallenges = async (req, res) => {
 
 const ChallengeWinner = async (req, res) => {
   try {
-    const idCompany = req.body.idCompany; // Get idChallenge from the query parameter
+    const idTester = req.body.idTester; // Get idChallenge from the query parameter
     const idChallenge = req.body.idChallenge; // Get idChallenge from the query parameter
     const idUser = req.body.idUser; // Get idUser from the query parameter
     const Challenge = await ChallengeModel.findById(idChallenge);
-    const tester = await Tester.findById(idCompany).select("-password");
+    const tester = await Tester.findById(idTester).select("-password");
     const User = await userModel.findById(idUser);
     console.log(Challenge);
     User.balance = User.balance + Challenge.price;
@@ -79,24 +79,24 @@ const ChallengeWinner = async (req, res) => {
     sendEmail(User.email, `You won the challenge ${Challenge.title}`);
     newChallenge = await Challenge.save();
     User.save();
-    newCompany = await tester.save();
-    console.log(newCompany);
-    res.status(200).json({ newCompany, newChallenge });
+    newTester = await tester.save();
+    console.log(newTester);
+    res.status(200).json({ newTester, newChallenge });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
-const getCompanyNotifications = async (req, res) => {
+const getTesterNotifications = async (req, res) => {
   try {
-    const tester = await companySchema.findById(req.params.companyId).populate({
-      path: "notificationsCompany",
+    const tester = await testerSchema.findById(req.params.testerId).populate({
+      path: "notificationsTester",
       populate: {
         path: "user",
         select: "firstname lastname picturePath",
       },
     });
     if (!tester) throw new Error("Tester not found");
-    res.json(tester.notificationsCompany);
+    res.json(tester.notificationsTester);
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ error: "Server Error" });
@@ -104,8 +104,8 @@ const getCompanyNotifications = async (req, res) => {
 };
 module.exports = {
   editProfile,
-  getCompany,
-  getCompanyChallenges,
+  getTester,
+  getTesterChallenges,
   ChallengeWinner,
-  getCompanyNotifications,
+  getTesterNotifications,
 };

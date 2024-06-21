@@ -56,7 +56,7 @@ export const AddWorkOfferModal = ({ open, handleClose }) => {
   const sendRequest = async () => {
     try {
       const imageURL = inputs.imageFile ? await uploadImageToFirebase() : "";
-      const res = await axios.post("http://localhost:8000/event/jobs/add", {
+      const res = await axios.post("http://localhost:8000/event/events/add", {
         title: inputs.title,
         description: inputs.description,
 

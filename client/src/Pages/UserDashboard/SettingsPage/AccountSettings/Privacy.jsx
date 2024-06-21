@@ -11,9 +11,9 @@ import FaceRecognition from "../../../../Pages/Authentification/FaceRecognition"
 import { useSelector } from "react-redux";
 import { selectisFaceRecog } from "../../../../redux/reducers/AuthReducer";
 import AlertSuccess from "../../../../Components/successalert";
-import { selectSuccess as selectCompanySuccess } from "../../../../redux/reducers/companyProfileReducer";
+import { selectSuccess as selectTesterSuccess } from "../../../../redux/reducers/testerProfileReducer";
 import { selectSuccess as selectUserSuccess } from "../../../../redux/reducers/userProfileReducer";
-import { companyEditProfile } from "../../../../redux/actions/companyProfileAction";
+import { testerEditProfile } from "../../../../redux/actions/testerProfileAction";
 
 export default function Privacy() {
   const [password, setPassword] = useState("");
@@ -24,7 +24,7 @@ export default function Privacy() {
   const myData = JSON.parse(localStorage.getItem("user"));
   const [formData, setFormData] = useState({});
 
-  const isCompanySuccess = useSelector(selectCompanySuccess);
+  const isTesterSuccess = useSelector(selectTesterSuccess);
   const isUserSuccess = useSelector(selectUserSuccess);
 
   const isFaceRecognition = useSelector(selectisFaceRecog);
@@ -37,7 +37,7 @@ export default function Privacy() {
       password: password,
     };
     if (myData.role == "tester") {
-      dispatch(companyEditProfile(updatedFormData, myData));
+      dispatch(testerEditProfile(updatedFormData, myData));
     } else {
       dispatch(userEditProfile(updatedFormData, myData));
     }
@@ -102,7 +102,7 @@ export default function Privacy() {
             >
               Save
             </Button>
-            {isCompanySuccess && (
+            {isTesterSuccess && (
               <AlertSuccess message={"changed your password"} />
             )}
             {isUserSuccess && (

@@ -1,5 +1,5 @@
 const ChallengeModel = require("../models/Challenge.model");
-const CompanyModel = require("../models/tester.model");
+const TesterModel = require("../models/tester.model");
 const UserModel = require("../models/user.model");
 
 const CreateChallenge = async (req, res, next) => {
@@ -11,14 +11,14 @@ const CreateChallenge = async (req, res, next) => {
   }
 
   try {
-    const tester = await CompanyModel.findById(req.userId);
+    const tester = await TesterModel.findById(req.userId);
     console.log(req.userId);
     if (tester.balance < req.body.price) {
       throw new Error("You don't have enough money to create this challenge");
     }
 
     const newChallenge = new ChallengeModel({
-      companyId: req.userId,
+      testerId: req.userId,
       ...req.body,
     });
 
@@ -29,7 +29,7 @@ const CreateChallenge = async (req, res, next) => {
     console.log("req.userId", req.userId);
 
     const savedChallenge = await newChallenge.save();
-    const data = await CompanyModel.findOneAndUpdate(
+    const data = await TesterModel.findOneAndUpdate(
       { _id: req.userId },
       { $push: { challenges: savedChallenge._id } },
       { new: true } // Return the updated document
@@ -81,7 +81,7 @@ const getChallenges = async (req, res) => {
   };
   try {
     const ChallengePosts = await ChallengeModel.find(filters).populate(
-      "companyId"
+      "testerId"
     );
     res.status(200).json(ChallengePosts);
   } catch (err) {

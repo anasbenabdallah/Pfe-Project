@@ -93,7 +93,7 @@ const getConversations = async (req, res) => {
           conversation.members.map(async (member) => {
             const user = await UserModel.findById(member);
             // Only include the other user in the conversation
-            if (user._id.toString() !== userId) {
+            if (user && user._id.toString() !== userId) {
               return {
                 id: user._id,
                 firstname: user.firstname,

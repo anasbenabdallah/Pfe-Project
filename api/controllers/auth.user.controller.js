@@ -1,5 +1,5 @@
 const userSchema = require("../models/user.model");
-const companySchema = require("../models/tester.model");
+const testerSchema = require("../models/tester.model");
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -37,13 +37,13 @@ const signUp = async (req, res) => {
     // If the role is "tester"
     else if (req.body.role == "tester") {
       // Create a new tester with the hashed password
-      const newCompany = new companySchema({
+      const newTester = new testerSchema({
         ...req.body,
         password: hashedPass,
       });
 
-      // Save the new tester to the companySchema collection
-      const tester = await newCompany.save();
+      // Save the new tester to the testerSchema collection
+      const tester = await newTester.save();
 
       // Return a success response with the new tester data
       return res
@@ -63,7 +63,7 @@ const signIn = async (req, res) => {
   try {
     //check if the email exist
     const user = await userSchema.findOne({ email: req.body.email });
-    const tester = await companySchema.findOne({ email: req.body.email });
+    const tester = await testerSchema.findOne({ email: req.body.email });
 
     if (!user && !tester)
       return res.status(400).json({ error: "email does not exist!" });

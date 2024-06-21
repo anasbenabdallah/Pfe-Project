@@ -3,7 +3,7 @@ import AuthReducer from "./AuthReducer";
 import AdminReducer from "./AdminReducer";
 import SocialPostReducer from "./SocialPostReducer";
 import UserProfileReducer from "./userProfileReducer";
-import CompanyProfileReducer from "./companyProfileReducer";
+import TesterProfileReducer from "./testerProfileReducer";
 import ChallengeReducer from "./ChallengeReducer";
 import ConversationReducer from "./ConversationReducer";
 import MessageReducer from "./MessageReducer";
@@ -18,7 +18,7 @@ export const RootReducer = combineReducers({
   Admin: AdminReducer,
   userProfile: UserProfileReducer,
   posts: SocialPostReducer,
-  CompanyProfile: CompanyProfileReducer,
+  TesterProfile: TesterProfileReducer,
   Challenge: ChallengeReducer,
   Conversation: ConversationReducer,
   Message: MessageReducer,

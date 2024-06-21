@@ -1,5 +1,5 @@
 const userSchema = require("../models/user.model");
-const companySchema = require("../models/tester.model");
+const testerSchema = require("../models/tester.model");
 const challengeSchema = require("../models/Challenge.model");
 const bcrypt = require("bcrypt");
 const Event = require("../models/event.model");
@@ -83,7 +83,7 @@ const getUser = async (req, res) => {
     if (user) {
       res.status(200).json(user);
     } else {
-      const tester = await companySchema.findById(id);
+      const tester = await testerSchema.findById(id);
       res.status(200).json(tester);
     }
   } catch (err) {
@@ -103,10 +103,10 @@ const getUsers = async (req, res) => {
 //getFollowers
 const getUserFriends = async (req, res) => {
   try {
-    // Find the current user by their ID using both userSchema and companySchema
+    // Find the current user by their ID using both userSchema and testerSchema
     const [currentUser] = await Promise.all([
       userSchema.findById(req.params.userId).select("-password"),
-      companySchema.findById(req.params.userId).select("-password"),
+      testerSchema.findById(req.params.userId).select("-password"),
     ]);
 
     // Fetch the details of all of the user's friends using their friend IDs
@@ -119,13 +119,13 @@ const getUserFriends = async (req, res) => {
       })
     );
 
-    const companyFriends = await Promise.all(
+    const testerFriends = await Promise.all(
       currentUser.followers.map((friendId) => {
-        return companySchema.findById(friendId).select("-password");
+        return testerSchema.findById(friendId).select("-password");
       })
     );
 
-    const friends = [...userFriends, ...companyFriends].filter(
+    const friends = [...userFriends, ...testerFriends].filter(
       (friend) => friend !== null
     );
 
@@ -139,10 +139,10 @@ const getUserFriends = async (req, res) => {
 
 const getUserFollowings = async (req, res) => {
   try {
-    // Find the current user by their ID using both userSchema and companySchema
+    // Find the current user by their ID using both userSchema and testerSchema
     const [currentUser] = await Promise.all([
       userSchema.findById(req.params.userId).select("-password"),
-      companySchema.findById(req.params.userId).select("-password"),
+      testerSchema.findById(req.params.userId).select("-password"),
     ]);
 
     // Fetch the details of all of the user's friends using their friend IDs
@@ -155,13 +155,13 @@ const getUserFollowings = async (req, res) => {
       })
     );
 
-    const companyFollowings = await Promise.all(
+    const testerFollowings = await Promise.all(
       currentUser.followings.map((friendId) => {
-        return companySchema.findById(friendId).select("-password");
+        return testerSchema.findById(friendId).select("-password");
       })
     );
 
-    const followings = [...userFollowings, ...companyFollowings].filter(
+    const followings = [...userFollowings, ...testerFollowings].filter(
       (friend) => friend !== null
     );
 
@@ -239,7 +239,7 @@ const getsuggestedUsers = async (req, res) => {
     const users = await userSchema
       .find({ role: { $ne: "admin" } })
       .select("-password");
-    const testers = await companySchema.find().select("-password");
+    const testers = await testerSchema.find().select("-password");
 
     // Combine users and testers into a single array
     let suggestedEntities = [...users, ...testers].slice(0, 10);
@@ -332,7 +332,7 @@ const getUserChallenges = async (req, res) => {
     const challenges = await userSchema.findById(userId).populate({
       path: "challenges",
       populate: {
-        path: "companyId",
+        path: "testerId",
         select: "-password",
       },
     });
@@ -347,14 +347,14 @@ const getUserNotifications = async (req, res) => {
     if (!user) throw new Error("User not found");
     console.log(user.notifications);
 
-    const processedJobs = new Set();
+    const processedEvents = new Set();
     const notifications = await Promise.all(
       user.notifications.map(async (notification) => {
         if (
           notification.event &&
-          !processedJobs.has(notification.event.toString())
+          !processedEvents.has(notification.event.toString())
         ) {
-          processedJobs.add(notification.event.toString());
+          processedEvents.add(notification.event.toString());
           const event = await Event.findById(notification.event).populate(
             "tester"
           );

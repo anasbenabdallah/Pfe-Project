@@ -1,17 +1,17 @@
 // EditProfileReducer.js
 const init = {
   editedProfile: {},
-  companyProfile: {},
+  testerProfile: {},
   error: null,
   success: false,
 };
 
-export const selectSuccess = (state) => state.CompanyProfile.success;
-export const selectError = (state) => state.CompanyProfile.error;
+export const selectSuccess = (state) => state.TesterProfile.success;
+export const selectError = (state) => state.TesterProfile.error;
 
 const EditProfileReducer = (state = init, action) => {
   switch (action.type) {
-    case "company_edit_profile_success":
+    case "tester_edit_profile_success":
       return {
         ...state,
         editedProfile: action.payload,
@@ -23,15 +23,15 @@ const EditProfileReducer = (state = init, action) => {
         ...state,
         success: false,
       };
-    case "company_edit_profile_error":
+    case "tester_edit_profile_error":
       return {
         ...state,
         error: action.payload,
       };
-    case "getCompanyById":
+    case "getTesterById":
       return {
         ...state,
-        companyProfile: action.payload,
+        testerProfile: action.payload,
         error: null,
       };
     default:

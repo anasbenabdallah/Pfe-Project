@@ -25,7 +25,7 @@ function ChallengeForm({ onClose }) {
 
   const isSuccess = useSelector(selectSuccess);
 
-  const companyId = JSON.parse(localStorage.getItem("user"))._id;
+  const testerId = JSON.parse(localStorage.getItem("user"))._id;
   const dispatch = useDispatch();
   console.log(deadline);
 
@@ -39,7 +39,7 @@ function ChallengeForm({ onClose }) {
 
     const data = await dispatch(
       addChallenge({
-        companyId,
+        testerId,
         title,
         description,
         category,

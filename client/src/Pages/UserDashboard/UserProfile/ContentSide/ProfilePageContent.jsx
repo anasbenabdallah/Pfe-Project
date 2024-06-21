@@ -5,7 +5,7 @@ import { Stack } from "@mui/system";
 import { ProfileNavigationTab } from "./Components/ProfileNavigationTab";
 import UserProfileInformations from "./Components/UserInformations/UserProfileInformations";
 import Followers from "./Components/Followers/Followers";
-import MyJobs from "./Components/MyJobs/MyJobs";
+import MyEvents from "./Components/MyEvents/MyEvents";
 import AddSocialPostCard from "../../../../Components/shared/CreatePost/AddSocialPostCard";
 import MySocialPosts from "./Components/MyPosts/MySocialPosts ";
 import MyChallenges from "./Components/MyChallenges/MyChallenges";

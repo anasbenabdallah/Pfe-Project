@@ -7,7 +7,7 @@ const labelStyles = { mb: 1, mt: 2, fontSize: "24px", fontWeight: "bold" };
 
 const BlogDetail = () => {
   const navigate = useNavigate();
-  const [event, setJob] = useState();
+  const [event, setEvent] = useState();
   const id = useParams().id;
   console.log(id);
   const [inputs, setInputs] = useState({});
@@ -26,7 +26,7 @@ const BlogDetail = () => {
   };
   useEffect(() => {
     fetchDetails().then((data) => {
-      setJob(data.event);
+      setEvent(data.event);
       setInputs({
         title: data.event.title,
         description: data.event.description,

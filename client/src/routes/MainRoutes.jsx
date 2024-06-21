@@ -31,13 +31,13 @@ const ContestDetails = Loadable(
 const BrowseLayout = Loadable(
   lazy(() => import("../Pages/UserDashboard/BrowsePage/BrowseLayout"))
 );
-//CompanyPage
-const CompanyLayout = Loadable(
-  lazy(() => import("../Pages/UserDashboard/CompanyPage/CompanyLayout"))
+//TesterPage
+const TesterLayout = Loadable(
+  lazy(() => import("../Pages/UserDashboard/TesterPage/TesterLayout"))
 );
-const AllJobs = Loadable(
+const AllEvents = Loadable(
   lazy(() =>
-    import("../Pages/UserDashboard/BrowsePage/Content/WorkCards/AllJobs")
+    import("../Pages/UserDashboard/BrowsePage/Content/WorkCards/AllEvents")
   )
 );
 const BlogDetail = Loadable(
@@ -100,14 +100,14 @@ const MainRoutes = {
           element: <ContestDetails />,
         },
         {
-          path: "MyJobs/:id",
+          path: "MyEvents/:id",
           element: <BlogDetail />,
         },
       ],
     },
     {
       path: "/tester",
-      element: <CompanyLayout />,
+      element: <TesterLayout />,
     },
     {
       path: "/search/results",

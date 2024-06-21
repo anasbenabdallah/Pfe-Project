@@ -29,11 +29,11 @@ const ChooseWinner = () => {
   console.log(data);
 
   const handleSubmit = async () => {
-    const companyId = myData._id;
+    const testerId = myData._id;
     const winnerId = selectedUser._id;
     console.log(selectedUser);
     await dispatch(
-      chooseWinner({ idChallenge: id, idCompany: companyId, idUser: winnerId })
+      chooseWinner({ idChallenge: id, idTester: testerId, idUser: winnerId })
     );
     console.log("done winner is", selectedUser.firstname);
     window.location.reload();

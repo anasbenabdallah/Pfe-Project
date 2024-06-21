@@ -222,8 +222,8 @@ const SocialPosts = (props) => {
                     >
                       <Typography variant="h6">
                         {post.firstname} {post.lastname}
-                        {post.companyName && (
-                          <Typography> {post.companyName}</Typography>
+                        {post.testerName && (
+                          <Typography> {post.testerName}</Typography>
                         )}
                       </Typography>
                     </Link>
@@ -353,8 +353,8 @@ const SocialPosts = (props) => {
                           >
                             <Typography variant="h6">
                               {post.firstname} {post.lastname}
-                              {post.companyName && (
-                                <Typography> {post.companyName}</Typography>
+                              {post.testerName && (
+                                <Typography> {post.testerName}</Typography>
                               )}
                             </Typography>
                           </Link>

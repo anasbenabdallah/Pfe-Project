@@ -22,7 +22,7 @@ const {
 } = require("../validators/user.auth.validators");
 
 const {
-  companyRegisterValidator,
+  testerRegisterValidator,
 } = require("../validators/tester.auth.validators");
 
 //imported MiddleWare
@@ -44,7 +44,7 @@ authRouter.post(
     if (req.body.role === "user") {
       return validate(userRegisterValidator)(req, res, next);
     } else if (req.body.role === "tester") {
-      return validate(companyRegisterValidator)(req, res, next);
+      return validate(testerRegisterValidator)(req, res, next);
     }
   },
   signUp

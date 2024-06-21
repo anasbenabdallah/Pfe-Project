@@ -34,13 +34,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const JobPopup = ({
+const EventPopup = ({
   open,
   handleClose,
   title,
   description,
   username,
-  jobId,
+  eventId,
   userId,
 }) => {
   const classes = useStyles();
@@ -51,7 +51,7 @@ const JobPopup = ({
   const handleApply = async (userId) => {
     try {
       const response = await axios.put(
-        `http://localhost:8000/event/jobs/${jobId}/apply/${userId}`
+        `http://localhost:8000/event/events/${eventId}/apply/${userId}`
       );
       setSnackbarMessage(response.data);
       setSnackbarSeverity("success");
@@ -66,7 +66,7 @@ const JobPopup = ({
   const handleUnapply = async (userId) => {
     try {
       const response = await axios.put(
-        `http://localhost:8000/event/jobs/${jobId}/unapply/${userId}`
+        `http://localhost:8000/event/events/${eventId}/unapply/${userId}`
       );
       setSnackbarMessage(response.data);
       setSnackbarSeverity("success");
@@ -171,4 +171,4 @@ const JobPopup = ({
   );
 };
 
-export default JobPopup;
+export default EventPopup;

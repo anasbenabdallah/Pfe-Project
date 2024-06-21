@@ -75,8 +75,8 @@ const stripeUpdate = async (request, response) => {
         } else {
           const tester = await Tester.findById(paymentIntentMetadata.userId);
           tester.balance = tester.balance + paymentIntent.amount / 100;
-          const newCompany = await tester.save();
-          console.log(newCompany);
+          const newTester = await tester.save();
+          console.log(newTester);
         }
         const subscription = await stripe.subscriptions.retrieve(
           subscriptionId

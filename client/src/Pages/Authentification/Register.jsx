@@ -16,7 +16,7 @@ import AlertSuccess from "../../Components/successalert";
 const Register = () => {
   const [firstname, setFirstName] = useState("");
   const [lastname, setLastName] = useState("");
-  const [companyName, setCompanyName] = useState("");
+  const [testerName, setTesterName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isActionCompleted, setIsActionCompleted] = useState(false);
@@ -36,7 +36,7 @@ const Register = () => {
         register({ firstname, lastname, email, password, role })
       );
     } else if (role === "tester") {
-      data = await dispatch(register({ companyName, email, password, role }));
+      data = await dispatch(register({ testerName, email, password, role }));
     }
     setIsActionCompleted(true);
     const timeoutId = setTimeout(() => {
@@ -104,8 +104,8 @@ const Register = () => {
                     <input
                       type="text"
                       placeholder="Tester Name"
-                      value={companyName}
-                      onChange={(e) => setCompanyName(e.target.value)}
+                      value={testerName}
+                      onChange={(e) => setTesterName(e.target.value)}
                     />
                   )}
                 </>
@@ -125,10 +125,6 @@ const Register = () => {
               </div>
               <div className="login-center-buttons">
                 <button type="submit">Register</button>
-                <button type="button">
-                  <img src={GoogleSvg} alt="Register with Google" />
-                  Register with Google
-                </button>
               </div>
             </form>
           </div>

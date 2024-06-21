@@ -1,34 +1,33 @@
 const express = require("express");
-const jobRouter = express.Router();
+const eventRouter = express.Router();
 
 const {
-  addJob,
-  getAllJobs,
-  updateJob,
+  addEvent,
+  getAllEvents,
+  updateEvent,
   getById,
-  deleteJob,
+  deleteEvent,
   getByUserId,
-  applyJob,
-  unapplyJob,
+  applyEvent,
+  unapplyEvent,
   getAppliers,
   acceptApplier,
   getAcceptedAppliers,
-  getSortedAppliers,
 } = require("../controllers/event.controller");
 
-jobRouter.post("/jobs/add", addJob);
-jobRouter.get("/", getAllJobs);
-jobRouter.put("/update/:id", updateJob);
-jobRouter.get("/:id", getById);
-jobRouter.delete("/:id", deleteJob);
-jobRouter.get("/user/:id", getByUserId);
+eventRouter.post("/events/add", addEvent);
+eventRouter.get("/", getAllEvents);
+eventRouter.put("/update/:id", updateEvent);
+eventRouter.get("/:id", getById);
+eventRouter.delete("/:id", deleteEvent);
+eventRouter.get("/user/:id", getByUserId);
 //
-jobRouter.put("/jobs/:jobId/apply/:userId", applyJob);
-jobRouter.put("/jobs/:jobId/unapply/:userId", unapplyJob);
-jobRouter.get("/jobs/:jobId/appliers", getAppliers);
-jobRouter.get("/jobs/:jobId/sortedappliers", getSortedAppliers);
-jobRouter.put("/jobs/:jobId/appliers/:userId/accept", acceptApplier);
+eventRouter.put("/events/:eventId/apply/:userId", applyEvent);
+eventRouter.put("/events/:eventId/unapply/:userId", unapplyEvent);
+eventRouter.get("/events/:eventId/appliers", getAppliers);
 
-jobRouter.get("/jobs/:jobId/accepted-appliers", getAcceptedAppliers);
+eventRouter.put("/events/:eventId/appliers/:userId/accept", acceptApplier);
 
-module.exports = jobRouter;
+eventRouter.get("/events/:eventId/accepted-appliers", getAcceptedAppliers);
+
+module.exports = eventRouter;

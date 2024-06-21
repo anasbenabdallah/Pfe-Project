@@ -6,13 +6,13 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { Box, Stack } from "@mui/system";
 import BusinessIcon from "@mui/icons-material/Business";
 import { useSelector, useDispatch } from "react-redux";
-import { getCompanies } from "../../../../../../redux/actions/AdminAction";
+import { getTesters } from "../../../../../../redux/actions/AdminAction";
 
 const NewUsers = () => {
   const dispatch = useDispatch();
   const testers = useSelector((state) => state.Admin.testers);
   useEffect(() => {
-    dispatch(getCompanies());
+    dispatch(getTesters());
   }, [dispatch]);
   const number = testers.length;
   return (

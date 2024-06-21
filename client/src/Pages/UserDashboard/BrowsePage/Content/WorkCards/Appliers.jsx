@@ -18,17 +18,17 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 
-const Participants = ({ handleClose, jobId, open }) => {
+const Participants = ({ handleClose, eventId, open }) => {
   const [appliers, setAppliers] = useState([]);
   const [acceptedAppliers, setAcceptedAppliers] = useState([]);
   const [sort, setSort] = useState(false);
 
-  console.log(jobId);
+  console.log(eventId);
   useEffect(() => {
     const fetchAppliers = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/event/jobs/${jobId}/appliers`
+          `http://localhost:8000/event/events/${eventId}/appliers`
         );
         setAppliers(response.data);
       } catch (err) {
@@ -36,14 +36,14 @@ const Participants = ({ handleClose, jobId, open }) => {
       }
     };
     fetchAppliers();
-  }, [jobId]);
+  }, [eventId]);
 
   useEffect(() => {
     // Load accepted appliers from local storage or from a server API
     const loadAcceptedAppliers = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/event/jobs/${jobId}/accepted-appliers`
+          `http://localhost:8000/event/events/${eventId}/accepted-appliers`
         );
         setAcceptedAppliers(response.data);
       } catch (err) {
@@ -51,12 +51,12 @@ const Participants = ({ handleClose, jobId, open }) => {
       }
     };
     loadAcceptedAppliers();
-  }, [jobId]);
+  }, [eventId]);
 
   const acceptApplier = async (userId) => {
     try {
       const response = await axios.put(
-        `http://localhost:8000/event/jobs/${jobId}/appliers/${userId}/accept`
+        `http://localhost:8000/event/events/${eventId}/appliers/${userId}/accept`
       );
       console.log(response.data.message);
       setAcceptedAppliers([...acceptedAppliers, userId]);
@@ -73,7 +73,7 @@ const Participants = ({ handleClose, jobId, open }) => {
     setSort(true);
     try {
       const response = await axios.get(
-        `http://localhost:8000/event/jobs/${jobId}/sortedappliers`
+        `http://localhost:8000/event/events/${eventId}/sortedappliers`
       );
       setAppliers(response.data);
     } catch (err) {

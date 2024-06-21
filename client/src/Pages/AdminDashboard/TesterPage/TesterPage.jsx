@@ -5,11 +5,11 @@ import { makeStyles } from "@mui/styles";
 //redux imports
 import { useSelector } from "react-redux";
 import {
-  selectCompanies,
+  selectTesters,
   selectUsers,
 } from "../../../redux/reducers/AdminReducer";
 import { useDispatch } from "react-redux";
-import { getCompanies, getUsers } from "../../../redux/actions/AdminAction";
+import { getTesters, getUsers } from "../../../redux/actions/AdminAction";
 
 import {
   Table,
@@ -26,7 +26,7 @@ import {
 } from "@mui/material";
 import { Stack } from "@mui/system";
 import ChallengeDialog from "./challengeDialog";
-import CompanyTableMenuItem from "./CompanyTableMenuItem";
+import TesterTableMenuItem from "./TesterTableMenuItem";
 
 const useStyles = makeStyles((theme) => ({
   avatar: {
@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CompanyPage = () => {
+const TesterPage = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [page, setPage] = useState(0);
@@ -57,10 +57,10 @@ const CompanyPage = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
-    dispatch(getCompanies());
+    dispatch(getTesters());
   }, [dispatch]);
 
-  const testers = useSelector(selectCompanies);
+  const testers = useSelector(selectTesters);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -126,7 +126,7 @@ const CompanyPage = () => {
                     >
                       <Grid item lg={2}>
                         <Avatar
-                          alt={`${tester.companyName}`}
+                          alt={`${tester.testerName}`}
                           src={tester.picturePath}
                           className={classes.avatar}
                         />
@@ -138,7 +138,7 @@ const CompanyPage = () => {
                             color="textSecondary"
                             variant="body1"
                           >
-                            {tester.companyName}
+                            {tester.testerName}
                           </Typography>
                         </Stack>
                       </Grid>
@@ -158,7 +158,7 @@ const CompanyPage = () => {
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    <CompanyTableMenuItem companyId={tester._id} />
+                    <TesterTableMenuItem testerId={tester._id} />
                   </TableCell>
                 </TableRow>
               ))}
@@ -186,4 +186,4 @@ const CompanyPage = () => {
   );
 };
 
-export default CompanyPage;
+export default TesterPage;

@@ -19,14 +19,14 @@ import storage from "../../../../../config/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useDispatch } from "react-redux";
 import { green } from "@mui/material/colors";
-import { companyEditProfile } from "../../../../../redux/actions/companyProfileAction";
+import { testerEditProfile } from "../../../../../redux/actions/testerProfileAction";
 import countries from "world-countries";
 import AlertContainer from "../../../../../Components/alerts";
 import AlertSuccess from "../../../../../Components/successalert";
 import {
   selectError,
   selectSuccess,
-} from "../../../../../redux/reducers/companyProfileReducer";
+} from "../../../../../redux/reducers/testerProfileReducer";
 import { useSelector } from "react-redux";
 
 const CustomIconButton = styled(IconButton)(({ theme }) => ({
@@ -109,7 +109,7 @@ export default function UserEdit() {
           setImageUrl(url);
           console.log(url);
           dispatch(
-            companyEditProfile({ ...formData, picturePath: url }, myData)
+            testerEditProfile({ ...formData, picturePath: url }, myData)
           );
           setIsActionCompleted(true);
         });
@@ -117,7 +117,7 @@ export default function UserEdit() {
         console.log(error);
       }
     } else {
-      dispatch(companyEditProfile(formData, myData));
+      dispatch(testerEditProfile(formData, myData));
       setIsActionCompleted(true);
       console.log(isActionCompleted);
     }
@@ -163,14 +163,14 @@ export default function UserEdit() {
 
           <TextField
             required
-            id="companyName"
-            name="companyName"
+            id="testerName"
+            name="testerName"
             placeholder="Tester name"
             fullWidth
             autoComplete="given-name"
-            defaultValue={myData.companyName}
+            defaultValue={myData.testerName}
             onChange={(e) =>
-              setFormData({ ...formData, companyName: e.target.value })
+              setFormData({ ...formData, testerName: e.target.value })
             }
           />
         </Grid>

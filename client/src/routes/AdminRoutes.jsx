@@ -12,8 +12,8 @@ const AdminDashboard = Loadable(
 const UsersPage2 = Loadable(
   lazy(() => import("../Pages/AdminDashboard/UsersPage/UsersPage2"))
 );
-const CompanyPage = Loadable(
-  lazy(() => import("../Pages/AdminDashboard/CompanyPage/CompanyPage"))
+const TesterPage = Loadable(
+  lazy(() => import("../Pages/AdminDashboard/TesterPage/TesterPage"))
 );
 const EvaluationPage = Loadable(
   lazy(() => import("../Pages/AdminDashboard/EvaluationPage/EvaluationPage"))
@@ -43,7 +43,7 @@ const AdminRoutes = {
     },
     {
       path: "testers",
-      element: <CompanyPage />,
+      element: <TesterPage />,
     },
     {
       path: "categories",

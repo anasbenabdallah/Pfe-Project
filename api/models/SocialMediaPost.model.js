@@ -25,7 +25,7 @@ const SocialMediaPostSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
-    companyName: {
+    testerName: {
       type: String,
       required: false,
     },

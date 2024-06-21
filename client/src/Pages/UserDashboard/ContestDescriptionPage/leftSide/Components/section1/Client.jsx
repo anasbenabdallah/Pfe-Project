@@ -32,14 +32,14 @@ const ClientCard = () => {
         </Stack>
         <Stack flexDirection={"row"} columnGap={"1rem"}>
           <Avatar
-            src={card.companyId.picturePath || myData.picturePath}
+            src={card.testerId.picturePath || myData.picturePath}
             sx={{ bgcolor: "secondary", width: 50, height: 50 }}
             aria-label="client"
           ></Avatar>
           <Stack>
             <Stack display={"flex"} flexDirection={"row"} columnGap={1}>
               <Typography variant="h5">
-                {card.companyId.companyName || myData.companyName}{" "}
+                {card.testerId.testerName || myData.testerName}{" "}
               </Typography>
             </Stack>
             <Box sx={{ display: "flex", alignItems: "flex-end" }}>

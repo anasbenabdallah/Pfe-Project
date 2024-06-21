@@ -5,9 +5,9 @@ import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { useDispatch } from "react-redux";
-import { getCompanyChallenges } from "../../../../../redux/actions/ChallengeAction";
+import { getTesterChallenges } from "../../../../../redux/actions/ChallengeAction";
 import { useSelector } from "react-redux";
-import { selectCompanyChallenges } from "../../../../../redux/reducers/ChallengeReducer";
+import { selectTesterChallenges } from "../../../../../redux/reducers/ChallengeReducer";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import getDeadlineDifference from "../../TopSide/deadlineModif";
@@ -43,13 +43,13 @@ export const NavigationTab = ({ changeValue, value }) => {
   const myData = JSON.parse(localStorage.getItem("user"));
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getCompanyChallenges(myData._id));
+    dispatch(getTesterChallenges(myData._id));
   }, []);
-  const companyChallenges = useSelector(selectCompanyChallenges);
-  console.log("test", companyChallenges);
+  const testerChallenges = useSelector(selectTesterChallenges);
+  console.log("test", testerChallenges);
 
   let challenge;
-  const isOwner = companyChallenges.some((c) => {
+  const isOwner = testerChallenges.some((c) => {
     if (c._id === id) {
       challenge = c;
       return true;

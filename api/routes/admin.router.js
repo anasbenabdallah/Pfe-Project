@@ -9,17 +9,17 @@ const {
   delUser,
   disableUser,
   BanAccount,
-  getCompanies,
-  approveCompany,
+  getTesters,
+  approveTester,
 } = require("../controllers/admin.controllers");
 
 adminRouter.get("/Users", isAdmin, getUsers);
-adminRouter.get("/Testers", isAdmin, getCompanies);
+adminRouter.get("/Testers", isAdmin, getTesters);
 adminRouter.post("/addUser", addUser);
 adminRouter.put("/updUsers/:id", updUser);
 adminRouter.delete("/delUsers/:id", delUser);
 adminRouter.put("/users/:id/ban", isAdmin, BanAccount);
 adminRouter.put("/users/:id/:action", isAdmin, disableUser);
-adminRouter.post("/appCompany", approveCompany);
+adminRouter.post("/appTester", approveTester);
 
 module.exports = adminRouter;

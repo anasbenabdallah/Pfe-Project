@@ -88,7 +88,7 @@ const ProfileInformations = () => {
                     </div>
                   ) : (
                     <Typography variant="h4">
-                      {userProfile.companyName}
+                      {userProfile.testerName}
                       <Typography variant="body1" color="orange">
                         {" (Tester)"}
                       </Typography>

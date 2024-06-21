@@ -3,18 +3,17 @@ const User = require("../models/user.model");
 const Event = require("../models/event.model");
 const Tester = require("../models/tester.model");
 const { sendEmail } = require("../middlewares/mail.middleware");
-const { sortappliers } = require("../tensorflow/anotherz");
 
-const addJob = async (req, res, next) => {
+const addEvent = async (req, res, next) => {
   const { title, description, image, tester } = req.body;
 
-  let existingCompany;
+  let existingTester;
   try {
-    existingCompany = await Tester.findById(tester);
+    existingTester = await Tester.findById(tester);
   } catch (err) {
     return console.log(err);
   }
-  if (!existingCompany) {
+  if (!existingTester) {
     return res
       .status(400)
       .json({ message: "Unable to find tester by this ID" });
@@ -30,8 +29,8 @@ const addJob = async (req, res, next) => {
     const session = await mongoose.startSession();
     session.startTransaction();
     await event.save({ session });
-    existingCompany.jobs.push(event);
-    await existingCompany.save({ session });
+    existingTester.events.push(event);
+    await existingTester.save({ session });
     await session.commitTransaction();
   } catch (err) {
     console.log(err);
@@ -41,25 +40,25 @@ const addJob = async (req, res, next) => {
   return res.status(200).json({ event });
 };
 ///
-const getAllJobs = async (req, res, next) => {
-  let jobs;
+const getAllEvents = async (req, res, next) => {
+  let events;
   try {
-    jobs = await Event.find().populate("tester");
+    events = await Event.find().populate("tester");
   } catch (err) {
     return console.log(err);
   }
-  if (!jobs) {
+  if (!events) {
     return res.status(404).json({ message: "No Events Found" });
   }
-  return res.status(200).json({ jobs });
+  return res.status(200).json({ events });
 };
 //////
-const updateJob = async (req, res, next) => {
+const updateEvent = async (req, res, next) => {
   const { title, description } = req.body;
-  const jobId = req.params.id;
+  const eventId = req.params.id;
   let event;
   try {
-    event = await Event.findByIdAndUpdate(jobId, {
+    event = await Event.findByIdAndUpdate(eventId, {
       title,
       description,
     });
@@ -86,13 +85,13 @@ const getById = async (req, res, next) => {
   return res.status(200).json({ event });
 };
 //
-const deleteJob = async (req, res, next) => {
+const deleteEvent = async (req, res, next) => {
   const id = req.params.id;
 
   let event;
   try {
     event = await Event.findByIdAndRemove(id).populate("tester");
-    await event.tester.jobs.pull(event);
+    await event.tester.events.pull(event);
     await event.tester.save();
   } catch (err) {
     console.log(err);
@@ -102,24 +101,24 @@ const deleteJob = async (req, res, next) => {
   }
   return res.status(200).json({ message: "Successfully Delete" });
 };
-//// get compnay jobs
+//// get compnay events
 const getByUserId = async (req, res, next) => {
-  const companyId = req.params.id;
-  let companyJobs;
+  const testerId = req.params.id;
+  let testerEvents;
   try {
-    companyJobs = await Tester.findById(companyId).populate("jobs"); //in populte you use the Ref in user.model
+    testerEvents = await Tester.findById(testerId).populate("events"); //in populte you use the Ref in user.model
   } catch (err) {
     return console.log(err);
   }
-  if (!companyJobs) {
+  if (!testerEvents) {
     return res.status(404).json({ message: "No Event Found" });
   }
-  return res.status(200).json({ tester: companyJobs });
+  return res.status(200).json({ tester: testerEvents });
 };
 ////
-const applyJob = async (req, res) => {
+const applyEvent = async (req, res) => {
   try {
-    const event = await Event.findById(req.params.jobId).exec();
+    const event = await Event.findById(req.params.eventId).exec();
     if (!event) return res.status(400).json("Event not found");
 
     const user = await User.findById(req.params.userId).exec();
@@ -144,7 +143,7 @@ const applyJob = async (req, res) => {
 
     // add notification to tester
     const tester = await Tester.findById(event.tester).exec();
-    tester.notificationsCompany.push({
+    tester.notificationsTester.push({
       message: `paritcipated for your event of : ${event.title}`,
       event: event._id,
       user: user._id,
@@ -161,9 +160,9 @@ const applyJob = async (req, res) => {
   }
 };
 
-const unapplyJob = async (req, res) => {
+const unapplyEvent = async (req, res) => {
   try {
-    const event = await Event.findById(req.params.jobId).exec();
+    const event = await Event.findById(req.params.eventId).exec();
     if (!event) return res.status(400).json("Event not found");
 
     // Check if user has paritcipated
@@ -192,7 +191,7 @@ const unapplyJob = async (req, res) => {
 
 const getAppliers = async (req, res) => {
   try {
-    const event = await Event.findById(req.params.jobId)
+    const event = await Event.findById(req.params.eventId)
       .populate({ path: "appliers", select: "firstname lastname email" })
       .select({ appliers: 1 })
       .lean()
@@ -205,24 +204,12 @@ const getAppliers = async (req, res) => {
   }
 };
 
-const getSortedAppliers = async (req, res) => {
-  try {
-    const event = await Event.findById(req.params.jobId).populate("appliers");
-    if (event.appliers.length === 0)
-      return res.status(204).json(event.appliers);
-    const sortedappliers = await sortappliers(event.appliers);
-    return res.status(200).json(sortedappliers);
-  } catch (err) {
-    return res.status(500).json({ error: err.message });
-  }
-};
-
 const acceptApplier = async (req, res) => {
-  const { jobId, userId } = req.params;
+  const { eventId, userId } = req.params;
 
   try {
     // Find the event and the user
-    const event = await Event.findById(jobId);
+    const event = await Event.findById(eventId);
     const user = await User.findById(userId);
 
     // Check if the event and user exist
@@ -257,7 +244,7 @@ const acceptApplier = async (req, res) => {
 };
 const getAcceptedAppliers = async (req, res) => {
   try {
-    const event = await Event.findById(req.params.jobId).exec();
+    const event = await Event.findById(req.params.eventId).exec();
     if (!event) return res.status(400).json("Event not found");
 
     const acceptedAppliers = event.acceptedAppliers;
@@ -274,16 +261,15 @@ const getAcceptedAppliers = async (req, res) => {
 };
 
 module.exports = {
-  addJob,
-  getAllJobs,
-  updateJob,
+  addEvent,
+  getAllEvents,
+  updateEvent,
   getById,
-  deleteJob,
+  deleteEvent,
   getByUserId,
   acceptApplier,
   getAppliers,
-  unapplyJob,
-  applyJob,
+  unapplyEvent,
+  applyEvent,
   getAcceptedAppliers,
-  getSortedAppliers,
 };

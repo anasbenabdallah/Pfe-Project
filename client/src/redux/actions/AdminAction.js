@@ -26,7 +26,7 @@ export const getUsers = () => async (dispatch, getState) => {
   }
 };
 
-export const getCompanies = () => async (dispatch, getState) => {
+export const getTesters = () => async (dispatch, getState) => {
   try {
     const token = getState().Auth.token;
     console.log(token);
@@ -36,7 +36,7 @@ export const getCompanies = () => async (dispatch, getState) => {
     });
     console.log("data:", data);
     dispatch({
-      type: "get_companies_success",
+      type: "get_testers_success",
       payload: data,
     });
 
@@ -46,7 +46,7 @@ export const getCompanies = () => async (dispatch, getState) => {
     console.log("get testers error:", error.response.data);
 
     dispatch({
-      type: "get_companies_error",
+      type: "get_testers_error",
       payload: error.response.data,
     });
   }
@@ -82,14 +82,14 @@ export const addUser = (userData) => async (dispatch, getState) => {
   }
 };
 
-export const approveCompany = (companyId) => async (dispatch, getState) => {
+export const approveTester = (testerId) => async (dispatch, getState) => {
   try {
     const token = getState().Auth.token;
-    console.log(companyId);
+    console.log(testerId);
 
     const { data } = await axios.post(
-      "http://localhost:8000/admin/appCompany",
-      { companyId },
+      "http://localhost:8000/admin/appTester",
+      { testerId },
       {
         withCredentials: true,
       }
@@ -97,14 +97,14 @@ export const approveCompany = (companyId) => async (dispatch, getState) => {
 
     console.log("data:", data);
     dispatch({
-      type: "approve_company_success",
+      type: "approve_tester_success",
       payload: data,
     });
   } catch (error) {
     console.log("add user error:", error.response.data);
 
     dispatch({
-      type: "approve_company_error",
+      type: "approve_tester_error",
       payload: error.response.data,
     });
   }

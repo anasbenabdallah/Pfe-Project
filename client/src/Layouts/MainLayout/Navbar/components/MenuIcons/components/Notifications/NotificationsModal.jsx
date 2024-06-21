@@ -90,7 +90,7 @@ export const NotificationsModal = ({ open, handleClose }) => {
                     <React.Fragment>
                       <Typography variant="h5">
                         {notification.event
-                          ? notification?.event.tester?.companyName
+                          ? notification?.event.tester?.testerName
                           : myData.firstname}
                       </Typography>
                       <Typography variant="body1" noWrap>

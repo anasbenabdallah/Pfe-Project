@@ -3,11 +3,11 @@ import { useEffect, useState } from "react";
 import getDeadlineDifference from "../../../../ContestDescriptionPage/TopSide/deadlineModif";
 import { useSelector } from "react-redux";
 import {
-  selectCompanyChallenges,
+  selectTesterChallenges,
   selectUserChallenges,
 } from "../../../../../../redux/reducers/ChallengeReducer";
 import {
-  getCompanyChallenges,
+  getTesterChallenges,
   getUserChallenges,
 } from "../../../../../../redux/actions/ChallengeAction";
 import { useDispatch } from "react-redux";
@@ -22,17 +22,17 @@ const CompletedChallenges = () => {
 
   useEffect(() => {
     if (myData.role === "tester") {
-      dispatch(getCompanyChallenges(myData._id));
+      dispatch(getTesterChallenges(myData._id));
     } else {
       dispatch(getUserChallenges(myData._id));
     }
   }, [dispatch, myData._id, myData.role]);
 
   const challenges = useSelector(selectUserChallenges);
-  const companyChallenges = useSelector(selectCompanyChallenges);
+  const testerChallenges = useSelector(selectTesterChallenges);
 
   const updatedChallenges =
-    myData.role === "tester" ? companyChallenges : challenges;
+    myData.role === "tester" ? testerChallenges : challenges;
 
   useEffect(() => {
     setMyChallenges(

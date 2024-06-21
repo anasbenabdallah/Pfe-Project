@@ -2,13 +2,13 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Event from "./Event";
-import JobPopup from "./JobPopup";
+import EventPopup from "./EventPopup";
 import { Pagination, Button } from "@mui/material";
 import SearchBar from "./SearchBar";
 
-const AllJobs = () => {
-  const [jobs, setJobs] = useState([]);
-  const [selectedJob, setSelectedJob] = useState(null);
+const AllEvents = () => {
+  const [events, setEvents] = useState([]);
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [userId, setUserId] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -26,8 +26,8 @@ const AllJobs = () => {
     return data;
   };
 
-  const handleJobClick = (event) => {
-    setSelectedJob(event);
+  const handleEventClick = (event) => {
+    setSelectedEvent(event);
   };
 
   const handlePageChange = (event, value) => {
@@ -38,11 +38,11 @@ const AllJobs = () => {
     const user = JSON.parse(localStorage.getItem("user"));
     setUserId(user._id);
     sendRequest()
-      .then((data) => setJobs(data.jobs))
+      .then((data) => setEvents(data.events))
       .finally(() => setIsLoading(false));
   }, []);
 
-  const filteredJobs = jobs
+  const filteredEvents = events
     .filter((event) =>
       event.title.toLowerCase().includes(searchTerm.toLowerCase())
     )
@@ -56,7 +56,7 @@ const AllJobs = () => {
 
   const startIndex = (page - 1) * JOBS_PER_PAGE;
   const endIndex = startIndex + JOBS_PER_PAGE;
-  const paginatedJobs = filteredJobs.slice(startIndex, endIndex);
+  const paginatedEvents = filteredEvents.slice(startIndex, endIndex);
   const handleSortClick = () => {
     if (sortOrder === "asc") {
       setSortOrder("desc");
@@ -81,7 +81,7 @@ const AllJobs = () => {
   }
 
   return (
-    <div className="all-jobs-container">
+    <div className="all-events-container">
       <div>
         <SearchBar
           value={searchTerm}
@@ -91,18 +91,18 @@ const AllJobs = () => {
           Sort by {sortBy} {sortOrder === "asc" ? "↑" : "↓"}
         </Button>
       </div>
-      {selectedJob && (
-        <JobPopup
-          open={Boolean(selectedJob)}
-          handleClose={() => setSelectedJob(null)}
-          title={selectedJob.title}
-          description={selectedJob.description}
-          jobId={selectedJob._id}
+      {selectedEvent && (
+        <EventPopup
+          open={Boolean(selectedEvent)}
+          handleClose={() => setSelectedEvent(null)}
+          title={selectedEvent.title}
+          description={selectedEvent.description}
+          eventId={selectedEvent._id}
           userId={userId}
         />
       )}
-      {paginatedJobs.length > 0 ? (
-        paginatedJobs.map((event, index) => (
+      {paginatedEvents.length > 0 ? (
+        paginatedEvents.map((event, index) => (
           <Event
             key={index}
             id={event._id}
@@ -111,19 +111,19 @@ const AllJobs = () => {
             imageURL={event.image}
             profilpic={event.tester.picturePath}
             participants={event.participants}
-            userName={event.tester.companyName}
-            companyID={event.tester._id}
+            userName={event.tester.testerName}
+            testerID={event.tester._id}
             isUser={userId === event.tester._id}
             userId={userId}
-            onClick={() => handleJobClick(event)}
+            onClick={() => handleEventClick(event)}
           />
         ))
       ) : (
         <p>No events found.</p>
       )}
-      {filteredJobs.length > JOBS_PER_PAGE && (
+      {filteredEvents.length > JOBS_PER_PAGE && (
         <Pagination
-          count={Math.ceil(filteredJobs.length / JOBS_PER_PAGE)}
+          count={Math.ceil(filteredEvents.length / JOBS_PER_PAGE)}
           page={page}
           onChange={handlePageChange}
           style={{
@@ -137,4 +137,4 @@ const AllJobs = () => {
   );
 };
 
-export default AllJobs;
+export default AllEvents;

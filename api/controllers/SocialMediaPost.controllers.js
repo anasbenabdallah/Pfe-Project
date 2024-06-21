@@ -32,7 +32,7 @@ const CreatePost = async (req, res) => {
       userId: req.userId,
       firstname: isUser ? owner.firstname : undefined,
       lastname: isUser ? owner.lastname : undefined,
-      companyName: !isUser ? owner.companyName : undefined,
+      testerName: !isUser ? owner.testerName : undefined,
       userPicturePath: owner.picturePath,
       description: req.body.description,
       postPicturePath: req.body.postPicturePath,
@@ -58,7 +58,7 @@ const CreatePost = async (req, res) => {
     for (const user of users) {
       user.notifications.push({
         message: `A new post has been created by ${
-          isUser ? owner.firstname : owner.companyName
+          isUser ? owner.firstname : owner.testerName
         }`,
         post: savedPost._id,
       });
@@ -128,7 +128,7 @@ const getUserPosts = async (req, res) => {
     if (userId) {
       owner = await UserModel.findById(userId);
     } else {
-      owner = await CompanyModel.findById(userId);
+      owner = await TesterModel.findById(userId);
       isUser = false;
     }
 
@@ -138,12 +138,12 @@ const getUserPosts = async (req, res) => {
       posts = await Post.find({
         $or: [
           { userId: userId },
-          { companyId: userId },
+          { testerId: userId },
           { _id: { $in: sharedPostIds } },
         ],
       });
     } else {
-      posts = await Post.find({ companyId: userId });
+      posts = await Post.find({ testerId: userId });
     }
 
     res.status(200).json(posts);

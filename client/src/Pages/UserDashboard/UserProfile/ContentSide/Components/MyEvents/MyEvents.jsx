@@ -3,8 +3,8 @@ import axios from "axios";
 import Event from "../../../../BrowsePage/Content/WorkCards/Event";
 import CircularProgress from "@mui/material/CircularProgress";
 
-const MyJobs = () => {
-  const [tester, setCompany] = useState();
+const MyEvents = () => {
+  const [tester, setTester] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const id = JSON.parse(localStorage.getItem("user"))._id;
 
@@ -18,10 +18,10 @@ const MyJobs = () => {
 
   useEffect(() => {
     sendRequest()
-      .then((data) => setCompany(data.tester))
+      .then((data) => setTester(data.tester))
       .finally(() => setIsLoading(false));
   }, []);
-  const noJobsMessageStyle = {
+  const noEventsMessageStyle = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -44,8 +44,8 @@ const MyJobs = () => {
   }
   return (
     <div>
-      {tester && tester.jobs && tester.jobs.length > 0 ? (
-        tester.jobs.map((event, index) => (
+      {tester && tester.events && tester.events.length > 0 ? (
+        tester.events.map((event, index) => (
           <Event
             id={event._id}
             key={index}
@@ -55,16 +55,16 @@ const MyJobs = () => {
             imageURL={event.image}
             participants={event.participants}
             profilpic={tester.picturePath}
-            userName={tester.companyName}
+            userName={tester.testerName}
           />
         ))
       ) : (
-        <div style={noJobsMessageStyle}>
-          <p>You haven't added any jobs yet.</p>
+        <div style={noEventsMessageStyle}>
+          <p>You haven't added any events yet.</p>
         </div>
       )}
     </div>
   );
 };
 
-export default MyJobs;
+export default MyEvents;

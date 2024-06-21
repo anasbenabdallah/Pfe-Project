@@ -59,7 +59,7 @@ const FeedbacksPage = () => {
     const fetchReviews = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/reviews/company/${userId}/`,
+          `http://localhost:8000/reviews/tester/${userId}/`,
           { withCredentials: true }
         );
         setFeeds(response.data);

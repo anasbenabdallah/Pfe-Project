@@ -1,15 +1,15 @@
 const express = require("express");
 
-const companyRouter = express.Router();
+const testerRouter = express.Router();
 
 //imported controllers
-const { approveCompany } = require("../controllers/admin.controllers");
+const { approveTester } = require("../controllers/admin.controllers");
 const {
   editProfile,
   ChallengeWinner,
-  getCompanyNotifications,
+  getTesterNotifications,
 } = require("../controllers/Tester.controllers");
-const { getCompany } = require("../controllers/Tester.controllers");
+const { getTester } = require("../controllers/Tester.controllers");
 
 const validate = require("../middlewares/SchemaValidation.middleware");
 
@@ -19,22 +19,22 @@ const {
 } = require("../middlewares/authenticateToken.middleware");
 
 const {
-  companyEditProfileValidator,
+  testerEditProfileValidator,
 } = require("../validators/tester.auth.validators");
 
-companyRouter.put("/approve/:id/", authenticateToken, approveCompany);
-companyRouter.put(
+testerRouter.put("/approve/:id/", authenticateToken, approveTester);
+testerRouter.put(
   "/:id/",
-  validate(companyEditProfileValidator),
+  validate(testerEditProfileValidator),
   authenticateToken,
   editProfile
 );
-companyRouter.get("/get/:id/", authenticateToken, getCompany);
-companyRouter.post("/challengeWinner", authenticateToken, ChallengeWinner);
-companyRouter.get(
-  "/tester/:companyId/notifications",
+testerRouter.get("/get/:id/", authenticateToken, getTester);
+testerRouter.post("/challengeWinner", authenticateToken, ChallengeWinner);
+testerRouter.get(
+  "/tester/:testerId/notifications",
   authenticateToken,
-  getCompanyNotifications
+  getTesterNotifications
 );
 
-module.exports = companyRouter;
+module.exports = testerRouter;

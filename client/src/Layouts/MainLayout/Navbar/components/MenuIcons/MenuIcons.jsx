@@ -1,7 +1,7 @@
 import Divider from "@mui/material/Divider";
 import { Box } from "@mui/material";
 import ProfileMenu from "./components/ProfileMenu";
-import NotificationBell2 from "./components/NotificationCompany";
+import NotificationBell2 from "./components/NotificationTester";
 import Chat from "./components/Chat";
 import AddPostMenuList from "./components/AddPost/AddPostMenuList";
 import NotificationBell from "./components/Notifications/Notification";
