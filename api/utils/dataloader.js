@@ -70,7 +70,8 @@ async function trainModel(features, labels) {
 
 // Example user mapping
 const userMapping = {
-  "6671d1f600d7cf0c2def2b0b": "5eece14efc13ae6609000003",
+  "667aa9d7a928bdfae8a51eb2": "5eece14efc13ae6609000003",
+  "6671caefb75bb69d6c6c771a": "5eece14efc13ae6609000000",
   // Add more mappings here
 };
 

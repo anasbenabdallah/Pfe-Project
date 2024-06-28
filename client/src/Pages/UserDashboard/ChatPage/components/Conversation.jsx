@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { makeStyles } from "@mui/styles";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
@@ -41,6 +41,7 @@ const Conversation = ({ conversationId, socket, otherUser }) => {
 
   const user = JSON.parse(localStorage.getItem("user"));
   const currentUserId = user._id;
+  const userprofilepicture = user.picturePath;
 
   const dispatch = useDispatch();
   const messages = useSelector((state) => state.Message.messages);
@@ -48,20 +49,28 @@ const Conversation = ({ conversationId, socket, otherUser }) => {
   const [message, setMessage] = useState("");
   const [arrivalMessage, setArrivalMessage] = useState([]);
 
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   // Fetch messages when conversationId changes
   useEffect(() => {
     dispatch(getMessages(conversationId));
   }, [dispatch, conversationId]);
 
-  // Update arrivalMessage when messages change
+  // Update arrivalMessage when messages change and scroll to bottom
   useEffect(() => {
     setArrivalMessage(messages);
+    scrollToBottom();
   }, [messages]);
 
   // Set up socket.io connection and listen for incoming messages
   useEffect(() => {
     socket.off("getMessage").on("getMessage", (data) => {
       setArrivalMessage((prevMessages) => [...prevMessages, data]);
+      scrollToBottom();
     });
 
     socket.emit("addUser", currentUserId);
@@ -92,6 +101,10 @@ const Conversation = ({ conversationId, socket, otherUser }) => {
     // Update the state to include the new message
     setArrivalMessage((prevMessages) => [...prevMessages, newMessage]);
     setMessage("");
+    scrollToBottom();
+    setTimeout(() => {
+      dispatch(getMessages(conversationId));
+    }, 10);
   };
 
   return (
@@ -109,15 +122,22 @@ const Conversation = ({ conversationId, socket, otherUser }) => {
               <Grid container>
                 <Grid item xs={12}>
                   {message.sender._id === currentUserId ? (
-                    <ListItemText
-                      align="right"
-                      primary={message.message}
-                      secondary={formatDistance(
-                        new Date(message.createdAt),
-                        new Date(),
-                        { addSuffix: true }
+                    <Stack flexDirection={"row-reverse"} alignItems={"center"}>
+                      {userprofilepicture && (
+                        <ListItemAvatar style={{ marginLeft: "10px" }}>
+                          <Avatar src={userprofilepicture} />
+                        </ListItemAvatar>
                       )}
-                    />
+                      <ListItemText
+                        align="right"
+                        primary={message.message}
+                        secondary={formatDistance(
+                          new Date(message.createdAt),
+                          new Date(),
+                          { addSuffix: true }
+                        )}
+                      />
+                    </Stack>
                   ) : (
                     <Stack flexDirection={"row"} alignItems={"center"}>
                       {message.sender.picturePath && (
@@ -140,6 +160,7 @@ const Conversation = ({ conversationId, socket, otherUser }) => {
               </Grid>
             </ListItem>
           ))}
+          <div ref={messagesEndRef} />
         </List>
       )}
 
@@ -171,7 +192,7 @@ const Conversation = ({ conversationId, socket, otherUser }) => {
               size="small"
               onClick={handleCreateMessage}
               type="submit"
-              style={{ transform: "translateX(-110px)" }} // Adjust the value as needed
+              style={{ transform: "translateX(-110px)" }}
             >
               <SendIcon />
             </Fab>

@@ -11,18 +11,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const featuresData = [
   {
     icon: faComments,
-    title: "Forum de Discussion",
+    title: "Messagerie",
     text: "C'est un espace où les utilisateurs peuvent discuter ou inviter d'autres personnes à des discussions privées (chat) pour partager leurs intérêts, du contenu multimédia, obtenir de l'aide pour résoudre un problème rencontré, ou discuter des nouvelles fonctionnalités ajoutées qu'ils souhaitent voir dans les prochaines mises à jour du service WyPlay.",
   },
   {
     icon: faBullhorn,
-    title: "Analyse de Feedback",
+    title: "Feedback",
     text: "Mettre en place un système de collecte et d'analyse des retours d'information des utilisateurs afin d'améliorer continuellement l'expérience utilisateur. Les commentaires des utilisateurs seront examinés régulièrement pour identifier les points forts et les domaines à améliorer de l'application.",
   },
   {
     icon: faUsers,
-    title: "Tableau de Bord Administratif",
-    text: "Concevoir un tableau de bord administratif intuitif pour permettre aux administrateurs de gérer efficacement les utilisateurs, le contenu et les paramètres de l'application. Les fonctionnalités de gestion incluent la modération des utilisateurs et des contenus, la visualisation des statistiques et la configuration des préférences de l'application.",
+    title: "publication",
+    text: "Concevoir une interface de gestion des publications intuitive pour permettre aux administrateurs de gérer efficacement les utilisateurs, le contenu et les paramètres de l'application. Les fonctionnalités de gestion incluent la modération des utilisateurs et des contenus, la visualisation des statistiques et la configuration des préférences de l'application.",
   },
   {
     icon: faMagic,

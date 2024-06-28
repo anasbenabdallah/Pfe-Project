@@ -61,6 +61,7 @@ const CreatePost = async (req, res) => {
           isUser ? owner.firstname : owner.testerName
         }`,
         post: savedPost._id,
+        picturePath: owner.picturePath,
       });
       await user.save();
     }

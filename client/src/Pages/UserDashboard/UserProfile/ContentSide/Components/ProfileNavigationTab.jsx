@@ -42,7 +42,7 @@ export const ProfileNavigationTab = ({ changeValue, value }) => {
           onChange={changeValue}
           aria-label="basic tabs example"
         >
-          <Tab label="My Posts" />
+          <Tab label="Posts" />
 
           <Tab label="Followers" />
           <Tab label="Followings" />

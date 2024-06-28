@@ -81,6 +81,8 @@ const UserSchema = new mongoose.Schema(
       {
         event: { type: mongoose.Schema.Types.ObjectId, ref: "Event" },
         message: String,
+        picturePath: String,
+
         createdAt: { type: Date, default: Date.now },
       },
     ],

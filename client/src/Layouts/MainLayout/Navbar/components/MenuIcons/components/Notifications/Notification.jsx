@@ -154,7 +154,7 @@ const NotificationBell = () => {
                     src={
                       notification?.event
                         ? notification?.event.tester?.picturePath
-                        : myData.picturePath
+                        : notification?.picturePath
                     }
                   />
                 </ListItemAvatar>
@@ -164,10 +164,10 @@ const NotificationBell = () => {
                       <Typography variant="h5">
                         {notification.event
                           ? notification?.event.tester?.testerName
-                          : myData.firstname}
+                          : ""}
                       </Typography>
                       <Typography variant="body1" noWrap>
-                        {notification.message}
+                        {notification.message} <br />
                         <Typography component="span" fontWeight="bold">
                           {notification.event ? notification.event.title : ""}
                         </Typography>

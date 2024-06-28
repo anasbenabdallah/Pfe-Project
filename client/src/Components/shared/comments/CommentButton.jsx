@@ -98,7 +98,7 @@ const CommentButton = ({ postId }) => {
                     <div key={comment._id}>
                       <ListItem alignItems="flex-start">
                         <ListItemAvatar>
-                          <Avatar src={comment.userId.picturePath} />
+                          <Avatar />
                         </ListItemAvatar>
                         <ListItemText
                           primary={

@@ -230,9 +230,6 @@ const acceptApplier = async (req, res) => {
       message: "You have been accepted for The Event: ",
       event: event._id,
     });
-    sendEmail(user.email, "You have been accepted for a Event: ");
-    await user.save();
-    await event.save();
 
     return res
       .status(200)

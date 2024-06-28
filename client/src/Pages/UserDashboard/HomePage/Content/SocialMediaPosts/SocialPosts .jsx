@@ -223,7 +223,12 @@ const SocialPosts = (props) => {
                       <Typography variant="h6">
                         {post.firstname} {post.lastname}
                         {post.testerName && (
-                          <Typography> {post.testerName}</Typography>
+                          <div>
+                            <Typography> {post.testerName}</Typography>
+                            <Typography variant="body1" color="orange">
+                              {" (Tester)"}
+                            </Typography>
+                          </div>
                         )}
                       </Typography>
                     </Link>

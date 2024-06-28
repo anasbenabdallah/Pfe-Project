@@ -83,7 +83,14 @@ const UserCard = () => {
                     {myData.firstname + " " + myData.lastname}
                   </Typography>
                 ) : (
-                  <Typography variant="h4">{myData.testerName}</Typography>
+                  <div>
+                    <Box display="flex" alignItems="center">
+                      <Typography variant="h4">{myData.testerName}</Typography>
+                      <Typography variant="body1" color="orange">
+                        {" (Tester)"}
+                      </Typography>
+                    </Box>
+                  </div>
                 )}
                 <LevelLoading />
               </Stack>

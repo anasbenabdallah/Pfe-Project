@@ -22,26 +22,13 @@ function LinearProgressWithLabel(props) {
       <Stack spacing={1}>
         <Stack>
           <Stack flexDirection={"row"} alignItems={"center"}>
-            <Box sx={{ minWidth: 35 }}>
-              <Typography variant="subtitle1">lvl 6</Typography>
-            </Box>{" "}
             <Box sx={{ width: "100%", mr: 1 }}>
               <LinearProgress variant="determinate" {...props} />
             </Box>
-            <Box sx={{ minWidth: 35 }}>
-              <Typography variant="subtitle1">lvl 7</Typography>
-            </Box>
           </Stack>
           <Stack flexDirection={"row"} columnGap={1}>
-            <Typography variant="body1" color={"GrayText"}>
-              You need
-            </Typography>
             <Typography variant="body1" className={classes.color}>
-              500 points
-            </Typography>
-            <Typography color={"GrayText"}>to reach</Typography>
-            <Typography variant="body1" className={classes.color}>
-              level 7
+              Bienvenu !
             </Typography>
           </Stack>
         </Stack>
